@@ -4,6 +4,8 @@
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
 import sys
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 
 class Example(QWidget):
@@ -14,8 +16,10 @@ class Example(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(300, 300, 800, 600)
+        self.setGeometry(0, 0, 800, 600)
         self.setWindowTitle('Colours')
+        self.widget = QLabel('Hello', self)
+        self.setMinimumSize(800, 600)
         self.show()
 
     def paintEvent(self, e):
@@ -41,8 +45,8 @@ class Example(QWidget):
         qp.drawLine(124,368,124,414)
         qp.drawLine(124,414,62,414)
 
-        pen = QPen(QColor(255.80,0,255))
-        pen.setWidth(10)
+        pen = QPen(QColor(255,80,0,255))
+        pen.setWidth(4)
         qp.setPen(pen)
         #qp.setBrush(234)
         qp.drawPoint(0,368)
