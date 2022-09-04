@@ -16,7 +16,12 @@ from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFil
 from XmlReader import *
 
 class Ui_MainWindow(QWidget):
-    def setupUi(self, MainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        self.setupUi()
+    def setupUi(self):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -56,6 +61,37 @@ class Ui_MainWindow(QWidget):
        
         # self.openFileNamesDialog()
         # self.saveFileDialog()
+    def paintEvent(self, e):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawRectangles(qp)
+        qp.end()
+
+    def drawRectangles(self, qp):
+        col = QColor(0, 0, 0)
+        col.setNamedColor('#d4d4d4')
+        qp.setPen(col)
+
+        # qp.setBrush(QColor(200, 0, 0))
+        # qp.drawRect(0, 100, 300, 200)
+
+        #qp.setBrush(QColor(200, 0, 0))
+        #qp.drawRect(0, 100, 300, 200)
+
+        qp.setPen(QColor(255.80,0,255))
+        qp.drawLine(62,414,62,368)
+        qp.drawLine(62,368,124,368)
+        qp.drawLine(124,368,124,414)
+        qp.drawLine(124,414,62,414)
+
+        pen = QPen(QColor(255,80,0,255))
+        pen.setWidth(4)
+        qp.setPen(pen)
+        #qp.setBrush(234)
+        qp.drawPoint(0,368)
+        qp.drawPoint(124, 276)
+        qp.drawPoint(248, 184)
+
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
@@ -127,7 +163,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+   # ui.setupUi(MainWindow)
     MainWindow.setAttribute(Qt.WA_StyledBackground, True)
     MainWindow.setStyleSheet('background-color: #f0f0f0;')
     MainWindow.show()

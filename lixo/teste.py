@@ -1,5 +1,5 @@
 from XmlReader import *
-from Trans import *
+from WindowToViewportConversor import *
 
 
 
@@ -20,16 +20,16 @@ limitesViewPortX = (viewPortSize[0][0], viewPortSize[1][0])
 limitesViewPortY = (viewPortSize[0][1], viewPortSize[1][1])
 
 for ponto in pontos:
-  result = trans.transformar(ponto, limitesJanelaX, limitesJanelaY, limitesViewPortX, limitesViewPortY )
+  result = trans.transform(ponto, limitesJanelaX, limitesJanelaY, limitesViewPortX, limitesViewPortY )
   print(result)
 
 for reta in retas:
   for ponto in reta:
-    result = trans.transformar(ponto, limitesJanelaX, limitesJanelaY, limitesViewPortX, limitesViewPortY )
+    result = trans.transform(ponto, limitesJanelaX, limitesJanelaY, limitesViewPortX, limitesViewPortY )
     #print(result)
 
 for poligono in poligonos:
   for ponto in poligono:
-    result = trans.transformar(ponto, limitesJanelaX, limitesJanelaY, limitesViewPortX, limitesViewPortY )
+    result = trans.transform(ponto, limitesJanelaX, limitesJanelaY, limitesViewPortX, limitesViewPortY )
     #print(result)
 
