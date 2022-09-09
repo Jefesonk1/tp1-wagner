@@ -35,11 +35,14 @@ class Draw(QWidget):
         qp.setPen(pen)
 
         for point in self.points:
-            qp.drawPoint(*(point.getPoint()))
+            pointF = QPointF(*(point.getPoint()))
+            qp.drawPoint(pointF)
 
         for line in self.lines:
             p1, p2 = line.getLine()
-            qp.drawLine(*p1, *p2)
+            pointF1 = QPointF(*p1)
+            pointF2 = QPointF(*p2)
+            qp.drawLine(pointF1, pointF2)
 
         for polygon in self.polygons:
             currentPolygon = []
