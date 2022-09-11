@@ -25,7 +25,7 @@ class Ui_MainWindow(QMainWindow):
         self.centralwidget.setObjectName("centralwidget")
         #self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget = Draw(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(20, 90, 751, 451))
+        self.widget.setGeometry(QtCore.QRect(20, 90, 750, 550))
         self.widget.setStyleSheet(
             "background-color: green; border: 1px solid magenta")
         self.widget.setObjectName("widget")
@@ -103,6 +103,10 @@ class Ui_MainWindow(QMainWindow):
         self.displayFilePointsCoordinates = xmlReader.getPontos()
         self.displayFileLinesCoordinates = xmlReader.getRetas()
         self.displayFilePolygonsCoordinates = xmlReader.getPoligonos()
+        print(self.viewport)
+        viewportWidth = int(self.viewport.getXvMax() - self.viewport.getXvMin())
+        viewportHeight = int(self.viewport.getYvMax() - self.viewport.getYvMin())
+        self.widget.setGeometry(QtCore.QRect(20, 90, viewportWidth, viewportHeight))
 
         for point in self.displayFilePointsCoordinates:
             convertedPoint = conversor.convertToViewport(

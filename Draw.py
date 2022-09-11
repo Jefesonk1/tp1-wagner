@@ -26,7 +26,7 @@ class Draw(QWidget):
         qp = QPainter()
         qp.begin(self)
         self.pal = self.palette()
-        self.pal.setColor(QPalette.Background, Qt.black)
+        self.pal.setColor(QPalette.Background, QColor('#3d3d3d'))
         self.setAutoFillBackground(True)
         self.setPalette(self.pal)
         penColor = QColor(255, 0, 255)
