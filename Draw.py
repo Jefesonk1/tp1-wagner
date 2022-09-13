@@ -21,6 +21,12 @@ class Draw(QWidget):
         self.newPoint.emit(event.pos())
         self.update()
 
+    def erase(self):
+        self.points: Point = []
+        self.lines: Line = []
+        self.polygons: Polygon = []
+        self.update()
+
     def paintEvent(self, e):
         self.setMouseTracking(True)
         qp = QPainter()
