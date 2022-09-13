@@ -1,5 +1,6 @@
-import numpy as np
-import math
+from Elements.Transformations import *
+
+
 class Window:
     def __init__(self, xwMin, xwMax, ywMin, ywMax):
         self.xwMin = xwMin
@@ -12,7 +13,6 @@ class Window:
         self.sy = 1
         self.transformedWindow = None
         self.degree = 0
-
 
     def setXwMin(self, xwMin):
         self.xwMin = xwMin
@@ -47,12 +47,12 @@ class Window:
     def addRotation(self, degree):
         #self.degree += math.radians(degree)
         self.degree += degree
-        if(self.degree >= 360):
+        if (self.degree >= 360):
             self.degree = self.degree % 360
-        if(self.degree <= -360):
+        if (self.degree <= -360):
             #print('degree: ', (self.degree* -1) % 360)
             #self.degree = 360 - (self.degree* -1) % 360
-            self.degree = (self.degree* -1) % 360
+            self.degree = (self.degree * -1) % 360
             #self.degree *= -1
 
     def getRotation(self):
@@ -73,12 +73,10 @@ class Window:
         return self.sx, self.sy
 
     def getTransformationMatrix(self):
-        self.traslationMatrix = np.array([[1, 0, self.tx], [0, 1, self.ty], [0, 0, 1]])
-        self.rotationMatrix = np.array([[np.cos(self.degree), -np.sin(self.degree), 0], [np.sin(self.degree), np.cos(self.degree), 0], [0, 0, 1]])
-        self.scaleMatrix = np.array([[self.sx, 0, 0], [0, self.sy, 0], [0, 0, 1]])
+        wt = Transformations()
+        return wt.translade(self.tx, self.ty) @ wt.rotate(self.degree) @ wt.scale(self.sx, self.sy)
+        return self.traslationMatrix @ self.rotationMatrix  # @ self.scaleMatrix
 
-        return self.traslationMatrix @ self.rotationMatrix @ self.scaleMatrix
-    
     def resetTransformation(self):
         self.tx = 0
         self.ty = 0
@@ -86,6 +84,7 @@ class Window:
         self.sy = 1
         self.transformedWindow = None
         self.degree = 0
+
 
 w = Window(0, 100, 0, 100)
 print(w.getTransformationMatrix())

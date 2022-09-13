@@ -6,6 +6,9 @@ import resources.resource as resource
 from Draw import *
 from XmlReader import *
 from XmlWriter import *
+import math
+print(resource)
+
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self, MainWindow) -> None:
@@ -34,28 +37,33 @@ class Ui_MainWindow(QMainWindow):
         self.frameTransformations.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frameTransformations.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frameTransformations.setObjectName("frameTransformations")
-        self.widgetTrasformations = QtWidgets.QWidget(self.frameTransformations)
+        self.widgetTrasformations = QtWidgets.QWidget(
+            self.frameTransformations)
         self.widgetTrasformations.setGeometry(QtCore.QRect(10, 10, 210, 480))
         self.widgetTrasformations.setStyleSheet("")
         self.widgetTrasformations.setObjectName("widgetTrasformations")
-        self.buttonRotateLeft = QtWidgets.QPushButton(self.widgetTrasformations)
+        self.buttonRotateLeft = QtWidgets.QPushButton(
+            self.widgetTrasformations)
         self.buttonRotateLeft.setGeometry(QtCore.QRect(20, 80, 50, 30))
         self.buttonRotateLeft.setStyleSheet("")
         self.buttonRotateLeft.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("resources/icons/rotate-left.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("resources/icons/rotate-left.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonRotateLeft.setIcon(icon)
         self.buttonRotateLeft.setIconSize(QtCore.QSize(24, 24))
         self.buttonRotateLeft.setCheckable(False)
         self.buttonRotateLeft.setAutoExclusive(False)
         self.buttonRotateLeft.setObjectName("buttonRotateLeft")
         self.buttonRotateLeft.clicked.connect(self.buttonRotateLeftAction)
-        self.buttonRotateRight = QtWidgets.QPushButton(self.widgetTrasformations)
+        self.buttonRotateRight = QtWidgets.QPushButton(
+            self.widgetTrasformations)
         self.buttonRotateRight.setGeometry(QtCore.QRect(140, 80, 50, 30))
         self.buttonRotateRight.setStyleSheet("")
         self.buttonRotateRight.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("resources/icons/rotate-right.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(
+            "resources/icons/rotate-right.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonRotateRight.setIcon(icon1)
         self.buttonRotateRight.setIconSize(QtCore.QSize(24, 24))
         self.buttonRotateRight.setCheckable(False)
@@ -67,7 +75,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonUp.setStyleSheet("")
         self.buttonUp.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("resources/icons/up-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap("resources/icons/up-arrow.png"),
+                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonUp.setIcon(icon2)
         self.buttonUp.setIconSize(QtCore.QSize(24, 24))
         self.buttonUp.setCheckable(False)
@@ -79,7 +88,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonDown.setStyleSheet("")
         self.buttonDown.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("resources/icons/down-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(
+            "resources/icons/down-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonDown.setIcon(icon3)
         self.buttonDown.setIconSize(QtCore.QSize(24, 24))
         self.buttonDown.setCheckable(False)
@@ -91,7 +101,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonLeft.setStyleSheet("")
         self.buttonLeft.setText("")
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap("resources/icons/left-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(
+            "resources/icons/left-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonLeft.setIcon(icon4)
         self.buttonLeft.setIconSize(QtCore.QSize(24, 24))
         self.buttonLeft.setCheckable(False)
@@ -103,25 +114,30 @@ class Ui_MainWindow(QMainWindow):
         self.buttonRight.setStyleSheet("")
         self.buttonRight.setText("")
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap("resources/icons/right-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(
+            "resources/icons/right-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonRight.setIcon(icon5)
         self.buttonRight.setIconSize(QtCore.QSize(24, 24))
         self.buttonRight.setCheckable(False)
         self.buttonRight.setAutoExclusive(False)
         self.buttonRight.setObjectName("buttonRight")
         self.buttonRight.clicked.connect(self.buttonRightAction)
-        self.spinBoxRotateStepSize = QtWidgets.QSpinBox(self.widgetTrasformations)
+        self.spinBoxRotateStepSize = QtWidgets.QSpinBox(
+            self.widgetTrasformations)
         self.spinBoxRotateStepSize.setGeometry(QtCore.QRect(130, 300, 42, 25))
         self.spinBoxRotateStepSize.setObjectName("spinBoxRotateStepSize")
         self.spinBoxRotateStepSize.setValue(10)
         self.labelMoveRotate = QtWidgets.QLabel(self.widgetTrasformations)
         self.labelMoveRotate.setGeometry(QtCore.QRect(40, 30, 121, 20))
         self.labelMoveRotate.setObjectName("labelMoveRotate")
-        self.spinBoxTranslateStepSize = QtWidgets.QSpinBox(self.widgetTrasformations)
-        self.spinBoxTranslateStepSize.setGeometry(QtCore.QRect(130, 270, 42, 25))
+        self.spinBoxTranslateStepSize = QtWidgets.QSpinBox(
+            self.widgetTrasformations)
+        self.spinBoxTranslateStepSize.setGeometry(
+            QtCore.QRect(130, 270, 42, 25))
         self.spinBoxTranslateStepSize.setObjectName("spinBoxTranslateStepSize")
         self.spinBoxTranslateStepSize.setValue(10)
-        self.labelTranslateStepSize = QtWidgets.QLabel(self.widgetTrasformations)
+        self.labelTranslateStepSize = QtWidgets.QLabel(
+            self.widgetTrasformations)
         self.labelTranslateStepSize.setGeometry(QtCore.QRect(10, 270, 101, 20))
         self.labelTranslateStepSize.setObjectName("labelTranslateStepSize")
         self.labelRotateStepSize = QtWidgets.QLabel(self.widgetTrasformations)
@@ -132,7 +148,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonHome.setStyleSheet("")
         self.buttonHome.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("resources/icons/home.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap("resources/icons/home.png"),
+                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonHome.setIcon(icon6)
         self.buttonHome.setIconSize(QtCore.QSize(24, 24))
         self.buttonHome.setCheckable(False)
@@ -161,7 +178,7 @@ class Ui_MainWindow(QMainWindow):
         self.frameDrawer.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frameDrawer.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frameDrawer.setObjectName("frameDrawer")
-        self.widgetDrawer = Draw(self.frameDrawer) #self.frameDrawer)
+        self.widgetDrawer = Draw(self.frameDrawer)  # self.frameDrawer)
         self.widgetDrawer.setGeometry(QtCore.QRect(10, 10, 751, 481))
         self.widgetDrawer.setStyleSheet("background-color: \'#3d3d3d\'")
         self.widgetDrawer.setObjectName("widgetDrawer")
@@ -210,9 +227,12 @@ class Ui_MainWindow(QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.labelMoveRotate.setText(_translate("MainWindow", "Move/Rotate Window"))
-        self.labelTranslateStepSize.setText(_translate("MainWindow", "Traslation step size"))
-        self.labelRotateStepSize.setText(_translate("MainWindow", "Rotation step size"))
+        self.labelMoveRotate.setText(_translate(
+            "MainWindow", "Move/Rotate Window"))
+        self.labelTranslateStepSize.setText(
+            _translate("MainWindow", "Traslation step size"))
+        self.labelRotateStepSize.setText(
+            _translate("MainWindow", "Rotation step size"))
         self.buttonSaveXml.setText(_translate("MainWindow", "save as xml"))
         self.buttonUseless.setText(_translate("MainWindow", "teste2"))
         self.labelCoordinates.setText(_translate("MainWindow", "coordinates:"))
@@ -221,11 +241,10 @@ class Ui_MainWindow(QMainWindow):
         self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
 
-
-    def calcular(self,x, y, matrix):
-        #print(x,y)
-        print( matrix @ np.array([x,y,1]))
-        coord = matrix @ np.array([x,y,1])
+    def calcular(self, x, y, matrix):
+        # print(x,y)
+        print(matrix @ np.array([x, y, 1]))
+        coord = matrix @ np.array([x, y, 1])
         return (coord[0], coord[1])
 
     def newWinCoordinates(self):
@@ -236,11 +255,13 @@ class Ui_MainWindow(QMainWindow):
         # c = self.calcular(coord[1][0], 0, self.window.getTransformationMatrix())
         # d = self.calcular(coord[1][0], coord[1][1], self.window.getTransformationMatrix())
        # print(a,b,c,d)
-        xwMin,ywMin = self.calcular(*coord[0], self.window.getTransformationMatrix())
-        xwmax,ywmax = self.calcular(*coord[1], self.window.getTransformationMatrix())
+        xwMin, ywMin = self.calcular(
+            *coord[0], self.window.getTransformationMatrix())
+        xwmax, ywmax = self.calcular(
+            *coord[1], self.window.getTransformationMatrix())
         #print(xwMin,ywMin, xwmax,ywmax)
 
-        newWindow = Window(xwMin,xwmax, ywMin,ywmax)
+        newWindow = Window(xwMin, xwmax, ywMin, ywmax)
 
         print('wincoord', newWindow.getCoordinates())
         # conversor = WindowToViewportConversor()
@@ -295,7 +316,7 @@ class Ui_MainWindow(QMainWindow):
 
     def buttonLeftAction(self):
         print('moveu left')
-        self.window.addTranslation(-self.spinBoxTranslateStepSize.value(),0)
+        self.window.addTranslation(-self.spinBoxTranslateStepSize.value(), 0)
         print(self.window.getTranslation())
         self.newWinCoordinates()
 
@@ -310,7 +331,6 @@ class Ui_MainWindow(QMainWindow):
         self.window.resetTransformation()
         self.newWinCoordinates()
         self.widgetDrawer.erase()
-
 
     def buttonRotateLeftAction(self):
         print('rotate left')
@@ -338,18 +358,17 @@ class Ui_MainWindow(QMainWindow):
         #self.labelNameAbout.setGeometry(QtCore.QRect(10, 270, 101, 20))
         self.labelNameAbout.setObjectName("labelNameAbout")
         self.labelNameAbout.move(my_dialog.rect().center())
-        self.labelNameAbout.setText(u"<html><head/><body><p><a href=\"https://github.com/Jefesonk1\"><span style=\" text-decoration: underline; color:#0000ff;\">Github</span></a></p></body></html>")
+        self.labelNameAbout.setText(
+            u"<html><head/><body><p><a href=\"https://github.com/Jefesonk1\"><span style=\" text-decoration: underline; color:#0000ff;\">Github</span></a></p></body></html>")
         self.labelNameAbout.setOpenExternalLinks(True)
         #self.labelNameAbout.setText("Feito por: Jefeson Martins Delazeri\n email: jefesonk1@outlook.com \n github: https://github.com/Jefesonk1")
         my_dialog.exec_()  #
         # self.about = QtWidgets.QDialog()
-        
+
         # self.aboutUi = Ui_Dialog()
         # self.aboutUi.setupUi(self.about)
         # self.about.show()
 
-
-    
     def openFileNameDialog(self):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(
@@ -361,18 +380,17 @@ class Ui_MainWindow(QMainWindow):
         options = QFileDialog.Options()
         fileDialog = QFileDialog(self, 'Projects')
         fileDialog.setAttribute(Qt.WA_QuitOnClose, False)
-        fileName, _  = fileDialog.getSaveFileName(
+        fileName, _ = fileDialog.getSaveFileName(
             self.centralwidget, "Save", "", "XML Files (*.xml)", options=options)
         if fileName:
             return fileName
 
-
     def saveFileAsXml(self):
         pathFilename = self.saveFileDialog()
-        if(pathFilename):
+        if (pathFilename):
             xml = XmlWriter(pathFilename)
             xml.write(self.viewPortPointsCoordinates,
-                    self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
+                      self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
             self.buttonSaveXml.hide()
             self.buttonSaveXml.setText("Saved")
 
@@ -386,9 +404,12 @@ class Ui_MainWindow(QMainWindow):
         self.displayFileLinesCoordinates = xmlReader.getRetas()
         self.displayFilePolygonsCoordinates = xmlReader.getPoligonos()
         print(self.viewport)
-        viewportWidth = int(self.viewport.getXvMax() - self.viewport.getXvMin())
-        viewportHeight = int(self.viewport.getYvMax() - self.viewport.getYvMin())
-        self.widgetDrawer.setGeometry(QtCore.QRect(10, 10, viewportWidth, viewportHeight))
+        viewportWidth = int(self.viewport.getXvMax() -
+                            self.viewport.getXvMin())
+        viewportHeight = int(self.viewport.getYvMax() -
+                             self.viewport.getYvMin())
+        self.widgetDrawer.setGeometry(QtCore.QRect(
+            10, 10, viewportWidth, viewportHeight))
 
         for point in self.displayFilePointsCoordinates:
             convertedPoint = conversor.convertToViewport(
@@ -414,6 +435,7 @@ class Ui_MainWindow(QMainWindow):
         for polygon in self.viewPortPolygonsCoordinates:
             self.widgetDrawer.drawPolygon(polygon)
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -424,6 +446,6 @@ if __name__ == "__main__":
     app.setStyleSheet(stylesheet)
 
     ui = Ui_MainWindow(MainWindow)
-    #ui.setupUi(MainWindow)
+    # ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
