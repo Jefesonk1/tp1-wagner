@@ -16,9 +16,6 @@ from Draw import *
 from XmlReader import *
 from XmlWriter import *
 import math
-print(resource)
-print(math)
-
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self, MainWindow) -> None:
@@ -109,14 +106,21 @@ class Ui_MainWindow(QMainWindow):
         self.treeWidget = QtWidgets.QTreeWidget(self.frameMain)
         self.treeWidget.setGeometry(QtCore.QRect(10, 10, 200, 656))
         self.treeWidget.setObjectName("treeWidget")
-        self.treeWidget.headerItem().setText(0, "Type")
+        self.treeWidget.headerItem().setText(0, "ID")
         font = QtGui.QFont()
         font.setBold(True)
         self.treeWidget.headerItem().setFont(0, font)
-        self.treeWidget.headerItem().setText(1, "Name")
+        self.treeWidget.headerItem().setText(1, "Type")
         font = QtGui.QFont()
         font.setBold(True)
         self.treeWidget.headerItem().setFont(1, font)
+        self.treeWidget.headerItem().setText(2, "Coordinates")
+        font = QtGui.QFont()
+        font.setBold(True)
+        self.treeWidget.headerItem().setFont(2, font)
+        self.treeWidget.setColumnWidth(0, 55)
+        self.treeWidget.setColumnWidth(1, 60)
+        # self.treeWidget.setColumnWidth(2, 40)
         item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
         item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
         item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
@@ -320,20 +324,20 @@ class Ui_MainWindow(QMainWindow):
         self.labelObjectsCoordinates.setText(
             _translate("MainWindow", "Object Coordinates"))
         __sortingEnabled = self.treeWidget.isSortingEnabled()
-        self.treeWidget.setSortingEnabled(False)
-        self.treeWidget.topLevelItem(0).setText(
-            0, _translate("MainWindow", "Point"))
-        self.treeWidget.topLevelItem(0).setText(
-            1, _translate("MainWindow", "p1"))
-        self.treeWidget.topLevelItem(1).setText(
-            0, _translate("MainWindow", "Line"))
-        self.treeWidget.topLevelItem(1).setText(
-            1, _translate("MainWindow", "l1"))
-        self.treeWidget.topLevelItem(2).setText(
-            0, _translate("MainWindow", "Polygon"))
-        self.treeWidget.topLevelItem(2).setText(
-            1, _translate("MainWindow", "p1"))
-        self.treeWidget.setSortingEnabled(__sortingEnabled)
+        # self.treeWidget.setSortingEnabled(False)
+        # self.treeWidget.topLevelItem(0).setText(
+        #     0, _translate("MainWindow", "Point"))
+        # self.treeWidget.topLevelItem(0).setText(
+        #     1, _translate("MainWindow", "p1"))
+        # self.treeWidget.topLevelItem(1).setText(
+        #     0, _translate("MainWindow", "Line"))
+        # self.treeWidget.topLevelItem(1).setText(
+        #     1, _translate("MainWindow", "l1"))
+        # self.treeWidget.topLevelItem(2).setText(
+        #     0, _translate("MainWindow", "Polygon"))
+        # self.treeWidget.topLevelItem(2).setText(
+        #     1, _translate("MainWindow", "p1"))
+        # self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.labelMoveRotate.setText(
             _translate("MainWindow", "Move/Rotate/Scale"))
         self.labelTranslateStepSize.setText(
@@ -354,6 +358,7 @@ class Ui_MainWindow(QMainWindow):
         return (coord[0], coord[1])
 
     def newWinCoordinates(self):
+        return 0
         coord = self.window.getCoordinates()
         print('coord :', coord)
         # a = self.calcular(coord[0][0], 0, self.window.getTransformationMatrix())
@@ -410,19 +415,16 @@ class Ui_MainWindow(QMainWindow):
     def buttonUpAction(self):
         print('moveu up')
         self.window.addTranslation(0, self.spinBoxTranslateStepSize.value())
-        print(self.window.getTranslation())
         a = self.window.getTranslation()
         x = str(a[0])
         y = str(a[1])
         self.labelTranslation.setText(
             'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
-        print(self.window.getTransformationMatrix())
         self.newWinCoordinates()
 
     def buttonDownAction(self):
         print('moveu down')
         self.window.addTranslation(0, -self.spinBoxTranslateStepSize.value())
-        print(self.window.getTranslation())
         a = self.window.getTranslation()
         x = str(a[0])
         y = str(a[1])
@@ -438,7 +440,6 @@ class Ui_MainWindow(QMainWindow):
         y = str(a[1])
         self.labelTranslation.setText(
             'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
-        print(self.window.getTranslation())
         self.newWinCoordinates()
 
     def buttonRightAction(self):
@@ -449,7 +450,6 @@ class Ui_MainWindow(QMainWindow):
         y = str(a[1])
         self.labelTranslation.setText(
             'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
-        print(self.window.getTranslation())
         self.newWinCoordinates()
 
     def buttonHomeAction(self):
@@ -468,6 +468,10 @@ class Ui_MainWindow(QMainWindow):
         self.window.addRotation(-self.spinBoxRotateStepSize.value())
         print(self.window.getRotation())
         print(math.radians(self.window.getRotation()))
+        b = self.window.getRotation()
+        theta = str(b)
+        self.labelRotation.setText(
+            'Rotation     (' + '<b>Theta:  </b> ' + theta + 'º)')
         self.newWinCoordinates()
 
     def buttonRotateRightAction(self):
@@ -475,6 +479,10 @@ class Ui_MainWindow(QMainWindow):
         self.window.addRotation(self.spinBoxRotateStepSize.value())
         print(self.window.getRotation())
         print(math.radians(self.window.getRotation()))
+        b = self.window.getRotation()
+        theta = str(b)
+        self.labelRotation.setText(
+            'Rotation     (' + '<b>Theta:  </b> ' + theta + 'º)')
         self.newWinCoordinates()
 
     def triggerAbout(self):
@@ -525,18 +533,59 @@ class Ui_MainWindow(QMainWindow):
             self.buttonSaveXml.hide()
             self.buttonSaveXml.setText("Saved")
 
-    def openFile(self):
-        filePath = self.openFileNameDialog()
-        xmlReader = XmlReader(filePath)
-        conversor = WindowToViewportConversor()
-        self.window = xmlReader.getWindow()
-        self.viewport = xmlReader.getViewport()
-        self.displayFilePointsCoordinates = xmlReader.getPontos()
-        self.displayFileLinesCoordinates = xmlReader.getRetas()
-        self.displayFilePolygonsCoordinates = xmlReader.getPoligonos()
-        print(self.viewport)
+    def fillObjectsList(self, objectList: Union[Point, Line, Polygon]):
+        if isinstance(objectList, list):
+            if isinstance(objectList[0], Polygon):
+                print('Polygon')
+                items = []
+                for index, polygon in enumerate(objectList):
+                    item = None
+                    objectId = 'pl'+str(index)
+                    item = QTreeWidgetItem([objectId, 'Polygon'])
+                    # print(polygon, index)
+                    for indexPoint, point in enumerate(polygon.getPolygon()):
+                        xCoord = str(point.getPoint()[0])
+                        yCoord = str(point.getPoint()[1])
+                        coord = '('+xCoord+', '+yCoord+')'
+                        pointId = 'p'+str(indexPoint)
+                        child = QTreeWidgetItem([pointId, 'Point', coord])
+                        item.addChild(child)
+                    items.append(item)
+                self.treeWidget.insertTopLevelItems(0, items)
+            elif isinstance(objectList[0], Line):
+                print('Line')
+                items = []
+                for index, key in enumerate(objectList):
+                    p1, p2 = key.getLine()
+                    xCoordp1 = str(p1.getPoint()[0])
+                    yCoordp1 = str(p1.getPoint()[1])
+                    xCoordp2 = str(p2.getPoint()[0])
+                    yCoordp2 = str(p2.getPoint()[1])
+                    coord = '('+xCoordp1+', '+yCoordp1+')'
+                    coord2 = '('+xCoordp2+', '+yCoordp2+')'
+                    objectId = 'l'+str(index)
+                    item = QTreeWidgetItem([objectId, 'Line'])
+                    child = QTreeWidgetItem(['p1', 'Point', coord])
+                    child2 = QTreeWidgetItem(['p2', 'Point', coord2])
+                    item.addChild(child)
+                    item.addChild(child2)
+                    items.append(item)
+                self.treeWidget.insertTopLevelItems(0, items)
 
-        # fazer funcao update labels
+            elif isinstance(objectList[0], Point):
+                print('Point')
+                items = []
+                for index, key in enumerate(objectList):
+                    xCoord = str(key.getPoint()[0])
+                    yCoord = str(key.getPoint()[1])
+                    coord = '('+xCoord+', '+yCoord+')'
+                    objectId = 'p'+str(index)
+                    item = QTreeWidgetItem([objectId, 'Point', coord])
+                    items.append(item)
+                self.treeWidget.insertTopLevelItems(0, items)
+
+    def initLabels(self):
+       # fazer funcao update labels
         a = self.window.getTranslation()
         x = str(a[0])
         y = str(a[1])
@@ -562,6 +611,22 @@ class Ui_MainWindow(QMainWindow):
         self.labelWindowCoordinates.setText(
             '<b>wMin:</b> (' + xMin + ', ' + yMin + ') <b>wMax:</b> (' + xMax + ', ' + yMax + ')')
 
+    def openFile(self):
+        filePath = self.openFileNameDialog()
+        xmlReader = XmlReader(filePath)
+        conversor = WindowToViewportConversor()
+        self.window = xmlReader.getWindow()
+        self.viewport = xmlReader.getViewport()
+        self.displayFilePointsCoordinates = xmlReader.getPontos()
+        self.displayFileLinesCoordinates = xmlReader.getRetas()
+        self.displayFilePolygonsCoordinates = xmlReader.getPoligonos()
+        print(self.viewport)
+
+        self.fillObjectsList(self.displayFileLinesCoordinates)
+        self.fillObjectsList(self.displayFilePointsCoordinates)
+        self.fillObjectsList(self.displayFilePolygonsCoordinates)
+
+        self.initLabels()
         viewportWidth = int(self.viewport.getXvMax() -
                             self.viewport.getXvMin())
         viewportHeight = int(self.viewport.getYvMax() -
@@ -599,6 +664,8 @@ print(resource)
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    _Font = QFont("Tahoma", 10)
+    QApplication.setFont(_Font)
     MainWindow = QtWidgets.QMainWindow()
     styleFile = QFile("style.qss")
     styleFile.open(QFile.ReadOnly)

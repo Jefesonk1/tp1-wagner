@@ -2,12 +2,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-import resources.resource as resource
 from Draw import *
 from XmlReader import *
 from XmlWriter import *
 import math
-print(resource)
+#print(resource)
 
 
 class Ui_MainWindow(QMainWindow):
