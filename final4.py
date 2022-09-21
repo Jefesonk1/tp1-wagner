@@ -12,6 +12,7 @@ import string
 import resources.resource
 from PyQt5 import QtCore, QtGui, QtWidgets
 from addObjects import *
+from Elements.ObjectsConvert import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import *
@@ -449,10 +450,10 @@ class Ui_MainWindow(QMainWindow):
                 *coord[1], transformationMatrix)
             newWindow = Window(xwMin, xwmax, ywMin, ywmax)
 
-            print('new wincoordxxx', newWindow.getCoordinates(), newWindow.getCenter())
+           # print('new wincoordxxx', newWindow.getCoordinates(), newWindow.getCenter())
             newCoord = newWindow.getCoordinates()
             newCenter = newWindow.getCenter()
-            print('newCenter', newCenter)
+            #print('newCenter', newCenter)
             newTrans = wt.rotate(math.radians(-theta)) @ wt.translade(-newCenter[0], -newCenter[1])
             newCenter2 = self.calcular(*newCenter, newTrans)
             xwMin, ywMin = self.calcular(
@@ -460,18 +461,25 @@ class Ui_MainWindow(QMainWindow):
             xwmax, ywmax = self.calcular(
                 *newCoord[1], newTrans)
             newWindow2 = Window(xwMin, xwmax, ywMin, ywmax)
-            print(newWindow2.getCoordinates(), newWindow2.getCenter(), newCenter2)
+            #print(newWindow2.getCoordinates(), newWindow2.getCenter(), newCenter2)
             
             #####
             # newWindow2 -> usar dps pra calcular a transformada de viewport
             # newTrans -> usar dps pra calcular as coordenadas dos objetos
             #####
+            oc = ObjectsConvert()
+            newPoints = oc.convert(self.displayFilePointsCoordinates, newTrans)
+            newLines = oc.convert(self.displayFileLinesCoordinates, newTrans)
+            newPolygons = oc.convert(self.displayFilePolygonsCoordinates, newTrans)
+            self.widgetDrawer.erase()
+            self.fillDrawerWidget(newWindow, self.viewport, newPoints, newLines, newPolygons)
+            return
             
             self.widgetDrawer.erase()
             self.fillDrawerWidget(newWindow, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
 
         if(operation == 'translate'):
-            print('wincoord :', coord)
+            #print('wincoord :', coord)
             xwMin, ywMin = self.calcular(
                 *coord[0], wt.translade(tx,ty))
             xwmax, ywmax = self.calcular(
@@ -479,9 +487,10 @@ class Ui_MainWindow(QMainWindow):
 
             newWindow = Window(xwMin, xwmax, ywMin, ywmax)
 
-            print('new wincoord', newWindow.getCoordinates())
-            self.widgetDrawer.erase()
-            self.fillDrawerWidget(newWindow, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
+            #print('new wincoord', newWindow.getCoordinates())
+        self.widgetDrawer.erase()
+        self.fillDrawerWidget(newWindow, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
+
 
     def updateLabelTranslation(self, x: string, y: string):
         self.labelTranslation.setText(
@@ -554,8 +563,8 @@ class Ui_MainWindow(QMainWindow):
     def buttonRotateLeftAction(self):
         print('rotate left')
         self.window.addRotation(-self.spinBoxRotateStepSize.value())
-        print(self.window.getRotation())
-        print(math.radians(self.window.getRotation()))
+        #print(self.window.getRotation())
+        #print(math.radians(self.window.getRotation()))
         b = self.window.getRotation()
         theta = str(b)
         self.updateLabelRotation(theta)
@@ -843,8 +852,8 @@ class Ui_MainWindow(QMainWindow):
                 else:
                     newList.append(item)
            # newList.append(operation)
-        print('apply')
-        print(newList)
+        #print('apply')
+        #print(newList)
 
 if __name__ == "__main__":
     import sys

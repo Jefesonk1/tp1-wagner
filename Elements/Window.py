@@ -86,5 +86,5 @@ class Window:
         self.degree = 0
 
 
-w = Window(0, 100, 0, 100)
-print(w.getTransformationMatrix())
+#w = Window(0, 100, 0, 100)
+#print(w.getTransformationMatrix())

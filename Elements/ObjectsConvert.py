@@ -1,7 +1,6 @@
 
 from typing import List, Union
-
-from Geometry import Line, Point, Polygon
+from Elements.Geometry import *
 import numpy as np
 
 
@@ -18,7 +17,6 @@ class ObjectsConvert:
                     # print('polygon')
                     self.convertedObjectsList.append(
                         self.convertPolygon(object))
-                    pass
                 elif isinstance(object, Line):
                     # print('line')
                     self.convertedObjectsList.append(self.convertLine(object))
@@ -52,21 +50,21 @@ class ObjectsConvert:
         return Polygon(*newPolygon)
 
 
-matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-oc = ObjectsConvert()
-p = Point((1, 2))
-l = Line(p, p)
-pl = Polygon(p, p, p)
-a = []
-a.append(p)
-a.append(l)
-a.append(pl)
-list = oc.convert(a, matrix)
-print(list)
-print('point', a[0].getPoint())
+# matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+# oc = ObjectsConvert()
+# p = Point((1, 2))
+# l = Line(p, p)
+# pl = Polygon(p, p, p)
+# a = []
+# a.append(p)
+# a.append(l)
+# a.append(pl)
+# list = oc.convert(a, matrix)
+# print(list)
+# print('point', a[0].getPoint())
 
-for x in a[1].getLine():
-    print('line', x.getPoint())
+# for x in a[1].getLine():
+#     print('line', x.getPoint())
 
-for x in a[2].getPolygon():
-    print('polygon', x.getPoint())
+# for x in a[2].getPolygon():
+#     print('polygon', x.getPoint())
