@@ -8,17 +8,17 @@ class Point():
     def __str__(self):
        return 'Point = '+''.join(str(self.point))
 
-
     def getPoint(self):
         return self.point
-    
+
 
 class Line(Point):
     def __init__(self, point1: Point, point2: Point):
         self.line = [point1, point2]
+
     def __str__(self):
        return 'Line = '+''.join(str(e) for e in [self.line[0].getPoint(), self.line[1].getPoint()])
-        #return [self.line[0].getPoint(), self.line[1].getPoint()]
+
     def getLine(self):
         return self.line
 
@@ -28,10 +28,10 @@ class Polygon(Line):
         self.polygon = []
         for point in points:
             self.polygon.append(point)
+
     def __str__(self):
        return 'Polygon = ' + ''.join(str(e) for e in [x.getPoint()  for x in self.polygon])
 
-       # return [x.getPoint()  for x in self.polygon]
     def getPolygon(self):
         return self.polygon
 

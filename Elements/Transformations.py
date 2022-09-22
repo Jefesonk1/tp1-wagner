@@ -2,7 +2,6 @@ import numpy as np
 
 
 class Transformations:
-
     def translade(self, tx, ty):
         return np.array([[1, 0, tx], [0, 1, ty], [0, 0, 1]])
 

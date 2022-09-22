@@ -14,6 +14,12 @@ class Window:
         self.transformedWindow = None
         self.degree = 0
 
+    def setTransformedWindow(self, transformedWindow):
+        self.transformedWindow = transformedWindow
+
+    def getTransformedWindow(self):
+        return self.transformedWindow
+
     def setXwMin(self, xwMin):
         self.xwMin = xwMin
 
@@ -40,6 +46,12 @@ class Window:
 
     def getCoordinates(self):
         return [(self.xwMin, self.ywMin), (self.xwMax, self.ywMax)]
+
+    def getMinCoordinates(self):
+        return self.xwMin, self.ywMin
+
+    def getMaxCoordinates(self):
+        return self.xwMax, self.ywMax
 
     def getCenter(self):
         return (self.xwMin + self.xwMax) / 2, (self.ywMin + self.ywMax) / 2
