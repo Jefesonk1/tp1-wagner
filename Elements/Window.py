@@ -13,6 +13,10 @@ class Window:
         self.sy = 1
         self.transformedWindow = None
         self.degree = 0
+        self.__backup = [self.xwMin, self.xwMax, self.ywMin, self.ywMax]
+
+    def getWindowBackup(self):
+        return Window(*self.__backup)
 
     def setTransformedWindow(self, transformedWindow):
         self.transformedWindow = transformedWindow

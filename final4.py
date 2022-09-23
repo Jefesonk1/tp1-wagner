@@ -10,6 +10,7 @@
 
 from distutils.log import debug
 import string
+from tkinter import W
 import resources.resource
 from PyQt5 import QtCore, QtGui, QtWidgets
 from addObjects import *
@@ -37,6 +38,7 @@ class Ui_MainWindow(QMainWindow):
         self.displayFilePolygonsCoordinates = []
         self.history = []
         self.window = Window(0, 0, 0, 0)
+        #self.windowBackup = Window(0,0,0,0)
         self.viewport = Viewport(0, 0, 0, 0)
         self.windowRotation = 0
         self.windowTranslation = 0
@@ -377,28 +379,14 @@ class Ui_MainWindow(QMainWindow):
         return (coord[0], coord[1])
 
     def newWinCoordinates(self, operation):
-        # self.finalPoints = self.displayFilePointsCoordinates
-        # self.finalLines = self.displayFileLinesCoordinates
-        # self.finalPolygons = self.displayFilePolygonsCoordinates
-        # self.finalWindow = self.window
-        if self.finalPoints == []:
-            self.finalPoints = self.displayFilePointsCoordinates
-        if self.finalLines == []:
-            self.finalLines = self.displayFileLinesCoordinates
-        if self.finalPolygons == []:
-            self.finalPolygons = self.displayFilePolygonsCoordinates
         tx, ty = self.window.getTranslation()
         theta = self.window.getRotation()
         wt = Transformations()
-        xmin, ymin, xmax, ymax = 0,0,0,0
-        if(self.window.getTransformedWindow() == None):
-            xmin, ymin = self.window.getMinCoordinates()
-            xmax, ymax = self.window.getMaxCoordinates()
-        else:
-            xmin, ymin = self.window.getTransformedWindow().getMinCoordinates()
-            xmax, ymax = self.window.getTransformedWindow().getMaxCoordinates()
+        xmin, ymin = self.window.getMinCoordinates()
+        xmax, ymax = self.window.getMaxCoordinates()
+
         transladeToOrigin = wt.translade(-xmin, -ymin)
-        transladeToOriginalPosition = wt.translade(xmin, ymin)
+        transladeToOriginalPosition = wt.translade(xmin+tx, ymin+ty)
         rotate = wt.rotate(math.radians(theta))
 
         transformationMatrix =  transladeToOriginalPosition @ (rotate @ transladeToOrigin)
@@ -417,15 +405,15 @@ class Ui_MainWindow(QMainWindow):
 
             xwMin, ywMin = self.calculate(xMin, yMin, finalTransformationMatrix)
             xwMax, ywMax = self.calculate(xMax, yMax, finalTransformationMatrix)
-            self.window.setTransformedWindow(Window(xwMin, xwMax, ywMin, ywMax))
-            window = self.window.getTransformedWindow()
+            #self.window.setTransformedWindow(Window(xwMin, xwMax, ywMin, ywMax))
 
             oc = ObjectsConvert()
             self.finalPoints = oc.convert(self.displayFilePointsCoordinates, finalTransformationMatrix)
             self.finalLines = oc.convert(self.displayFileLinesCoordinates, finalTransformationMatrix)
             self.finalPolygons = oc.convert(self.displayFilePolygonsCoordinates, finalTransformationMatrix)
             self.widgetDrawer.erase()
-            self.fillDrawerWidget(window, self.viewport, self.finalPoints, self.finalLines, self.finalPolygons)
+            newWindow = Window(xwMin,xwMax, ywMin,ywMax)
+            self.fillDrawerWidget(newWindow, self.viewport, self.finalPoints, self.finalLines, self.finalPolygons)
             # self.window.setXwMin(xwMin)
             # self.window.setXwMax(xwmax)
             # self.window.setYwMin(ywMin)
@@ -434,14 +422,18 @@ class Ui_MainWindow(QMainWindow):
             return
 
         if(operation == 'translate'):
-            xwMin, ywMin = self.calculate(xmin, ymin, wt.translade(tx,ty))
-            xwMax, ywMax = self.calculate(xmax, ymax, wt.translade(tx,ty))
+            xwMin, ywMin = self.calculate(xmin, ymin, transformationMatrix)
+            xwMax, ywMax = self.calculate(xmax, ymax, transformationMatrix)
 
-            newWindow = Window(xwMin, xwMax, ywMin, ywMax)
-            self.window.getTransformedWindow().addTranslation(tx, ty)
+            # newWindow = Window(xwMin, xwMax, ywMin, ywMax)
+            #self.window.getTransformedWindow().addTranslation(tx, ty)
+            # self.window.setXwMin(xwMin)
+            # self.window.setXwMax(xwMax)
+            # self.window.setYwMax(ywMax)
+            # self.window.setYwMin(ywMin)
+            newWindow = Window(xwMin,xwMax, ywMin,ywMax)
             self.widgetDrawer.erase()
-            self.fillDrawerWidget(newWindow, self.viewport, self.finalPoints, self.finalLines, self.finalPolygons)
-
+            self.fillDrawerWidget(newWindow, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
 
     def updateLabelTranslation(self, x: string, y: string):
         self.labelTranslation.setText(
