@@ -100,6 +100,7 @@ class Window:
         self.sy = 1
         self.transformedWindow = None
         self.degree = 0
+        self.xwMin, self.xwMax, self.ywMin, self.ywMax = self.__backup
 
 
 #w = Window(0, 100, 0, 100)

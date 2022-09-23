@@ -391,49 +391,39 @@ class Ui_MainWindow(QMainWindow):
 
         transformationMatrix =  transladeToOriginalPosition @ (rotate @ transladeToOrigin)
 
-        if operation == 'rotate':
-            xMin, yMin = self.calculate(xmin, ymin, transformationMatrix)
-            xMax, yMax = self.calculate(xmax, ymax, transformationMatrix)
-            xCenter, yCenter = ((xMin + xMax) / 2, (yMin + yMax) / 2)
-            #newWindow = Window(xwMin, xwmax, ywMin, ywmax)
 
-            #xmin, ymin = newWindow.getMinCoordinates()
-            #xmax, ymax = newWindow.getMaxCoordinates()
-           # xNewCenter, yNewCenter = center
+        xMin, yMin = self.calculate(xmin, ymin, transformationMatrix)
+        xMax, yMax = self.calculate(xmax, ymax, transformationMatrix)
+        xCenter, yCenter = ((xMin + xMax) / 2, (yMin + yMax) / 2)
 
-            finalTransformationMatrix = wt.rotate(math.radians(-theta)) @ wt.translade(-xCenter, -yCenter)
+        finalTransformationMatrix = wt.rotate(math.radians(-theta)) @ wt.translade(-xCenter, -yCenter)
 
-            xwMin, ywMin = self.calculate(xMin, yMin, finalTransformationMatrix)
-            xwMax, ywMax = self.calculate(xMax, yMax, finalTransformationMatrix)
-            #self.window.setTransformedWindow(Window(xwMin, xwMax, ywMin, ywMax))
+        xwMin, ywMin = self.calculate(xMin, yMin, finalTransformationMatrix)
+        xwMax, ywMax = self.calculate(xMax, yMax, finalTransformationMatrix)
 
-            oc = ObjectsConvert()
-            self.finalPoints = oc.convert(self.displayFilePointsCoordinates, finalTransformationMatrix)
-            self.finalLines = oc.convert(self.displayFileLinesCoordinates, finalTransformationMatrix)
-            self.finalPolygons = oc.convert(self.displayFilePolygonsCoordinates, finalTransformationMatrix)
-            self.widgetDrawer.erase()
-            newWindow = Window(xwMin,xwMax, ywMin,ywMax)
-            self.fillDrawerWidget(newWindow, self.viewport, self.finalPoints, self.finalLines, self.finalPolygons)
-            # self.window.setXwMin(xwMin)
-            # self.window.setXwMax(xwmax)
-            # self.window.setYwMin(ywMin)
-            # self.window.setYwMax(ywmax)
-            #self.window  = self.finalWindow
-            return
+        oc = ObjectsConvert()
+        self.finalPoints = oc.convert(self.displayFilePointsCoordinates, finalTransformationMatrix)
+        self.finalLines = oc.convert(self.displayFileLinesCoordinates, finalTransformationMatrix)
+        self.finalPolygons = oc.convert(self.displayFilePolygonsCoordinates, finalTransformationMatrix)
+        self.widgetDrawer.erase()
+        newWindow = Window(xwMin,xwMax, ywMin,ywMax)
+        # for point in self.finalPoints:
+        #     print(point)
+        self.fillDrawerWidget(newWindow, self.viewport, self.finalPoints, self.finalLines, self.finalPolygons)
 
-        if(operation == 'translate'):
-            xwMin, ywMin = self.calculate(xmin, ymin, transformationMatrix)
-            xwMax, ywMax = self.calculate(xmax, ymax, transformationMatrix)
+        return
+        
+        # if(operation == 'translate'):
+        #     xwMin, ywMin = self.calculate(xmin, ymin, transformationMatrix)
+        #     xwMax, ywMax = self.calculate(xmax, ymax, transformationMatrix)
 
-            # newWindow = Window(xwMin, xwMax, ywMin, ywMax)
-            #self.window.getTransformedWindow().addTranslation(tx, ty)
-            # self.window.setXwMin(xwMin)
-            # self.window.setXwMax(xwMax)
-            # self.window.setYwMax(ywMax)
-            # self.window.setYwMin(ywMin)
-            newWindow = Window(xwMin,xwMax, ywMin,ywMax)
-            self.widgetDrawer.erase()
-            self.fillDrawerWidget(newWindow, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
+        #     newWindow = Window(xwMin,xwMax, ywMin,ywMax)
+        #     self.widgetDrawer.erase()
+        #     if self.finalPoints == [] or self.finalLines == [] or self.finalPolygons == []:
+        #         self.fillDrawerWidget(newWindow, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
+        #         return
+        #     self.widgetDrawer.erase()
+        #     self.fillDrawerWidget(newWindow, self.viewport, self.finalPoints, self.finalLines, self.finalPolygons)
 
     def updateLabelTranslation(self, x: string, y: string):
         self.labelTranslation.setText(
@@ -495,13 +485,13 @@ class Ui_MainWindow(QMainWindow):
     def buttonHomeAction(self):
         print('moveu home')
         self.window.resetTransformation()
-        self.newWinCoordinates()
-        self.widgetDrawer.erase()
+        #self.widgetDrawer.erase()
         a = self.window.getTranslation()
         x = str(a[0])
         y = str(a[1])
         self.labelTranslation.setText(
             'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
+        self.newWinCoordinates('a')
 
     def buttonRotateLeftAction(self):
         print('rotate left')
@@ -687,6 +677,7 @@ class Ui_MainWindow(QMainWindow):
 
         for ponto in _viewPortPointsCoordinates:
             #print('entrou aqui nessa porra', ponto.getPoint())
+            print(ponto)
             self.widgetDrawer.drawPoint(ponto)
 
         for line in _viewPortLinesCoordinates:
