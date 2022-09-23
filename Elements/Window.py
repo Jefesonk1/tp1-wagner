@@ -13,7 +13,7 @@ class Window:
         self.sy = 1
         self.transformedWindow = None
         self.degree = 0
-        self.__backup = [self.xwMin, self.xwMax, self.ywMin, self.ywMax]
+        self.__backup = [xwMin, xwMax, ywMin, ywMax]
 
     def getWindowBackup(self):
         return Window(*self.__backup)
@@ -78,6 +78,10 @@ class Window:
         self.tx += tx
         self.ty += ty
 
+    def addScale(self, sx, sy):
+        self.sx += sx
+        self.sy += sy
+
     def getTranslation(self):
         return self.tx, self.ty
 
@@ -101,6 +105,7 @@ class Window:
         self.transformedWindow = None
         self.degree = 0
         self.xwMin, self.xwMax, self.ywMin, self.ywMax = self.__backup
+        print(self.xwMin, self.xwMax, self.ywMin, self.ywMax)
 
 
 #w = Window(0, 100, 0, 100)

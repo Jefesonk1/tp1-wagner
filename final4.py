@@ -297,6 +297,7 @@ class Ui_MainWindow(QMainWindow):
         self.buttonZoomIn.setCheckable(False)
         self.buttonZoomIn.setAutoExclusive(False)
         self.buttonZoomIn.setObjectName("buttonZoomIn")
+        self.buttonZoomIn.clicked.connect(self.buttonZoomInAction)
         self.buttonZoomOut = QtWidgets.QPushButton(self.widgetTrasformations)
         self.buttonZoomOut.setGeometry(QtCore.QRect(30, 120, 50, 30))
         self.buttonZoomOut.setStyleSheet("")
@@ -309,6 +310,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonZoomOut.setCheckable(False)
         self.buttonZoomOut.setAutoExclusive(False)
         self.buttonZoomOut.setObjectName("buttonZoomOut")
+        self.buttonZoomOut.clicked.connect(self.buttonZoomOutAction)
+
         self.radioButtonWindow = QtWidgets.QRadioButton(
             self.widgetTrasformations)
         self.radioButtonWindow.setGeometry(QtCore.QRect(130, 220, 89, 20))
@@ -381,15 +384,17 @@ class Ui_MainWindow(QMainWindow):
     def newWinCoordinates(self, operation):
         tx, ty = self.window.getTranslation()
         theta = self.window.getRotation()
+        sx, sy = self.window.getScale()
         wt = Transformations()
         xmin, ymin = self.window.getMinCoordinates()
         xmax, ymax = self.window.getMaxCoordinates()
 
+        scale = wt.scale(sx, sy)
         transladeToOrigin = wt.translade(-xmin, -ymin)
         transladeToOriginalPosition = wt.translade(xmin+tx, ymin+ty)
         rotate = wt.rotate(math.radians(theta))
 
-        transformationMatrix =  transladeToOriginalPosition @ (rotate @ transladeToOrigin)
+        transformationMatrix =  transladeToOriginalPosition @ (rotate @ (transladeToOrigin @ scale))
 
 
         xMin, yMin = self.calculate(xmin, ymin, transformationMatrix)
@@ -432,6 +437,32 @@ class Ui_MainWindow(QMainWindow):
     def updateLabelRotation(self, degree: string):
         self.labelRotation.setText(
             f'Rotation: {degree}')
+
+    def buttonZoomOutAction(self):
+        print('zin')
+        self.window.addScale(0.1, 0.1)
+        a = self.window.getScale()
+        x = str(a[0])
+        y = str(a[1])
+        # self.labelTranslation.setText(
+        #     'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
+        self.updateLabelTranslation(x, y)
+        self.newWinCoordinates('translate')
+        self.addOnHistory(
+            ['Scale', (-0.1, -0.1)])
+
+    def buttonZoomInAction(self):
+        print('zout')
+        self.window.addScale(-0.1, -0.1)
+        a = self.window.getScale()
+        x = str(a[0])
+        y = str(a[1])
+        # self.labelTranslation.setText(
+        #     'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
+        self.updateLabelTranslation(x, y)
+        self.newWinCoordinates('translate')
+        self.addOnHistory(
+            ['Scale', (-0.1, -0.1)])
 
     def buttonUpAction(self):
         print('moveu up')
@@ -491,6 +522,8 @@ class Ui_MainWindow(QMainWindow):
         y = str(a[1])
         self.labelTranslation.setText(
             'Translation     (' + '<b>X:  </b> ' + x + ', ' + '<b>Y:  </b> ' + y+')')
+        import copy
+        self.window = copy.deepcopy(self.backupWindow)
         self.newWinCoordinates('a')
 
     def buttonRotateLeftAction(self):
@@ -693,7 +726,12 @@ class Ui_MainWindow(QMainWindow):
         else:
             filePath = self.openFileNameDialog()
         xmlReader = XmlReader(filePath)
+        import copy
         self.window = xmlReader.getWindow()
+        self.backupWindow = copy.deepcopy(self.window)
+        #self.window.setXwMax(31)
+        print(self.backupWindow.getCoordinates())
+        #exit(0)
         self.viewport = xmlReader.getViewport()
         self.displayFilePointsCoordinates = xmlReader.getPontos()
         self.displayFileLinesCoordinates = xmlReader.getRetas()
