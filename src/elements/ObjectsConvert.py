@@ -1,6 +1,6 @@
 
 from typing import List, Union
-from Elements.Geometry import *
+from elements.Geometry import *
 import numpy as np
 
 

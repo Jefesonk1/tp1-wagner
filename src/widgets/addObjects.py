@@ -14,7 +14,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from Elements.Geometry import Line, Point, Polygon
+from elements.Geometry import Line, Point, Polygon
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):

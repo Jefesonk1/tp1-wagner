@@ -1,4 +1,4 @@
-from Elements.Transformations import *
+from elements.Transformations import *
 
 
 class Window:
@@ -11,18 +11,18 @@ class Window:
         self.ty = 0
         self.sx = 1
         self.sy = 1
-        self.transformedWindow = None
+        # self.transformedWindow = None
         self.degree = 0
-        self.__backup = [xwMin, xwMax, ywMin, ywMax]
+        # self.__backup = [xwMin, xwMax, ywMin, ywMax]
 
-    def getWindowBackup(self):
-        return Window(*self.__backup)
+    # def getWindowBackup(self):
+    #     return Window(*self.__backup)
 
-    def setTransformedWindow(self, transformedWindow):
-        self.transformedWindow = transformedWindow
+    # def setTransformedWindow(self, transformedWindow):
+    #     self.transformedWindow = transformedWindow
 
-    def getTransformedWindow(self):
-        return self.transformedWindow
+    # def getTransformedWindow(self):
+    #     return self.transformedWindow
 
     def setXwMin(self, xwMin):
         self.xwMin = xwMin
@@ -85,27 +85,27 @@ class Window:
     def getTranslation(self):
         return self.tx, self.ty
 
-    def setScale(self, sx, sy):
-        self.sx = sx
-        self.sy = sy
+    # def setScale(self, sx, sy):
+    #     self.sx = sx
+    #     self.sy = sy
 
     def getScale(self):
         return self.sx, self.sy
 
-    def getTransformationMatrix(self):
-        wt = Transformations()
-        return wt.translade(self.tx, self.ty) @ wt.rotate(self.degree) @ wt.scale(self.sx, self.sy)
-        return self.traslationMatrix @ self.rotationMatrix  # @ self.scaleMatrix
+    # def getTransformationMatrix(self):
+    #     wt = Transformations()
+    #     return wt.translade(self.tx, self.ty) @ wt.rotate(self.degree) @ wt.scale(self.sx, self.sy)
 
-    def resetTransformation(self):
-        self.tx = 0
-        self.ty = 0
-        self.sx = 1
-        self.sy = 1
-        self.transformedWindow = None
-        self.degree = 0
-        self.xwMin, self.xwMax, self.ywMin, self.ywMax = self.__backup
-        print(self.xwMin, self.xwMax, self.ywMin, self.ywMax)
+
+    # def resetTransformation(self):
+    #     self.tx = 0
+    #     self.ty = 0
+    #     self.sx = 1
+    #     self.sy = 1
+    #     self.transformedWindow = None
+    #     self.degree = 0
+    #     self.xwMin, self.xwMax, self.ywMin, self.ywMax = self.__backup
+    #     print(self.xwMin, self.xwMax, self.ywMin, self.ywMax)
 
 
 #w = Window(0, 100, 0, 100)

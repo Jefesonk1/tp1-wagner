@@ -1,11 +1,11 @@
 from typing import Union
 from typing import List
-from Elements.Window import *
-from Elements.Viewport import *
-from Elements.Geometry import *
+from elements.Window import *
+from elements.Viewport import *
+from elements.Geometry import *
 
 
-class WindowToViewportConversor:
+class WindowToViewport:
     def __transform(self, pontos, window: Window, viewport: Viewport):
         Xw, Yw = pontos
         XwMin = window.getXwMin()

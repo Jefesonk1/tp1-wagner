@@ -1,6 +1,5 @@
 from typing import Tuple
 
-
 class Point():
     def __init__(self, point: Tuple):
         self.point = point
