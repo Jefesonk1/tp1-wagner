@@ -28,9 +28,9 @@ def WorldToPPC(window: Window):
     finalTransformationMatrix = wt.rotate(
         math.radians(-theta)) @ wt.translade(-xCenter, -yCenter)
 
-    # xwMin, ywMin = calculate(xMin, yMin, finalTransformationMatrix)
-    # xwMax, ywMax = calculate(xMax, yMax, finalTransformationMatrix)
-    return finalTransformationMatrix
+    xwMin, ywMin = calculate(xMin, yMin, finalTransformationMatrix)
+    xwMax, ywMax = calculate(xMax, yMax, finalTransformationMatrix)
+    return finalTransformationMatrix, Window(xwMin, xwMax, ywMin, ywMax)
     # oc = ObjectsConvert()
     # viewPortPointsCoordinates = oc.convert(
     #     displayFilePointsCoordinates, finalTransformationMatrix)

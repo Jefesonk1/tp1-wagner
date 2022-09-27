@@ -24,9 +24,12 @@ import copy
 from utils.calculate import calculate
 from utils.XmlReader import *
 from utils.XmlWriter import *
+from conversors.ppc import WorldToPPC
 
 
 print('resources loaded', resources.resource)
+
+
 class Ui_MainWindow(QMainWindow):
     def __init__(self, MainWindow, debug=False) -> None:
         super().__init__(MainWindow)
@@ -154,7 +157,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonRotateLeft.setStyleSheet("")
         self.buttonRotateLeft.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(self.icons_prefix + "rotate-left.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(self.icons_prefix +
+                        "rotate-left.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonRotateLeft.setIcon(icon1)
         self.buttonRotateLeft.setIconSize(QtCore.QSize(24, 24))
         self.buttonRotateLeft.setCheckable(False)
@@ -168,7 +172,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonRotateRight.setStyleSheet("")
         self.buttonRotateRight.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(self.icons_prefix + "rotate-right.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(
+            self.icons_prefix + "rotate-right.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonRotateRight.setIcon(icon2)
         self.buttonRotateRight.setIconSize(QtCore.QSize(24, 24))
         self.buttonRotateRight.setCheckable(False)
@@ -195,7 +200,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonDown.setStyleSheet("")
         self.buttonDown.setText("")
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(self.icons_prefix + "down-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(self.icons_prefix +
+                        "down-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonDown.setIcon(icon4)
         self.buttonDown.setIconSize(QtCore.QSize(24, 24))
         self.buttonDown.setCheckable(False)
@@ -208,7 +214,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonLeft.setStyleSheet("")
         self.buttonLeft.setText("")
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(self.icons_prefix + "left-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(self.icons_prefix +
+                        "left-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonLeft.setIcon(icon5)
         self.buttonLeft.setIconSize(QtCore.QSize(24, 24))
         self.buttonLeft.setCheckable(False)
@@ -221,7 +228,8 @@ class Ui_MainWindow(QMainWindow):
         self.buttonRight.setStyleSheet("")
         self.buttonRight.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(self.icons_prefix + "right-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap(self.icons_prefix +
+                        "right-arrow.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.buttonRight.setIcon(icon6)
         self.buttonRight.setIconSize(QtCore.QSize(24, 24))
         self.buttonRight.setCheckable(False)
@@ -325,7 +333,7 @@ class Ui_MainWindow(QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.actionOpen.triggered.connect(self.openFile)
         self.actionAbout.triggered.connect(self.triggerAbout)
-        #retirar dps
+        # retirar dps
         self.openFile(self.debug)
 
     def retranslateUi(self, MainWindow):
@@ -358,36 +366,20 @@ class Ui_MainWindow(QMainWindow):
         self.actionAbout.setText(_translate("MainWindow", "About"))
 
     def calculatePPC(self):
-        tx, ty = self.window.getTranslation()
-        theta = self.window.getRotation()
-        sx, sy = self.window.getScale()
-        wt = Transformations()
-        xmin, ymin = self.window.getMinCoordinates()
-        xmax, ymax = self.window.getMaxCoordinates()
-
-        scale = wt.scale(sx, sy)
-        transladeToOrigin = wt.translade(-xmin, -ymin)
-        transladeToOriginalPosition = wt.translade(xmin+tx, ymin+ty)
-        rotate = wt.rotate(math.radians(theta))
-
-        transformationMatrix =  transladeToOriginalPosition @ (rotate @ (transladeToOrigin @ scale))
-
-        xMin, yMin = calculate(xmin, ymin, transformationMatrix)
-        xMax, yMax = calculate(xmax, ymax, transformationMatrix)
-        xCenter, yCenter = ((xMin + xMax) / 2, (yMin + yMax) / 2)
-
-        finalTransformationMatrix = wt.rotate(math.radians(-theta)) @ wt.translade(-xCenter, -yCenter)
-
-        xwMin, ywMin = calculate(xMin, yMin, finalTransformationMatrix)
-        xwMax, ywMax = calculate(xMax, yMax, finalTransformationMatrix)
+        conversor, window = WorldToPPC(self.window)
 
         oc = ObjectsConvert()
-        self.viewPortPointsCoordinates = oc.convert(self.displayFilePointsCoordinates, finalTransformationMatrix)
-        self.viewPortLinesCoordinates = oc.convert(self.displayFileLinesCoordinates, finalTransformationMatrix)
-        self.viewPortPolygonsCoordinates = oc.convert(self.displayFilePolygonsCoordinates, finalTransformationMatrix)
+        self.viewPortPointsCoordinates = oc.convert(
+            self.displayFilePointsCoordinates, conversor)
+        self.viewPortLinesCoordinates = oc.convert(
+            self.displayFileLinesCoordinates, conversor)
+        self.viewPortPolygonsCoordinates = oc.convert(
+            self.displayFilePolygonsCoordinates, conversor)
         self.widgetDrawer.erase()
-        newWindow = Window(xwMin,xwMax, ywMin,ywMax)
-        self.fillDrawerWidget(newWindow, self.viewport, self.viewPortPointsCoordinates, self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
+
+        newWindow = window
+        self.fillDrawerWidget(newWindow, self.viewport, self.viewPortPointsCoordinates,
+                              self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
 
     def updateLabelTranslation(self, x: string, y: string):
         self.labelTranslation.setText(
@@ -417,15 +409,35 @@ class Ui_MainWindow(QMainWindow):
         self.addOnHistory(
             ['Scale', (-0.1, -0.1)])
 
+
+    def getParentPath(self, item):
+        def getParent(item, outstring):
+            if item.parent() is None:
+                return outstring
+            outstring = item.parent().text(0) + '/' + outstring
+            return getParent(item.parent(), outstring)
+        output = getParent(item, item.text(0))
+        return output
+
     def buttonUpAction(self):
-        self.window.addTranslation(0, self.spinBoxTranslateStepSize.value())
-        a = self.window.getTranslation()
-        x = str(a[0])
-        y = str(a[1])
-        self.updateLabelTranslation(x, y)
-        self.calculatePPC()
-        self.addOnHistory(
-            ['Translation', (0, self.spinBoxTranslateStepSize.value())])
+        if self.radioButtonWindow.isChecked():
+            self.window.addTranslation(0, self.spinBoxTranslateStepSize.value())
+            a = self.window.getTranslation()
+            x = str(a[0])
+            y = str(a[1])
+            self.updateLabelTranslation(x, y)
+            self.calculatePPC()
+            self.addOnHistory(
+                ['Translation', (0, self.spinBoxTranslateStepSize.value())])
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            item = self.treeWidget.currentItem()
+            #print(item.text(0))
+            print(self.getParentPath(item))
+            index = int(self.getParentPath(item).split('-')[1])
+            #print()
+            #self.displayFilePointsCoordinates[index] = Point((33,33))
+            print(self.displayFilePointsCoordinates[index])
+            #print()
 
     def buttonDownAction(self):
         self.window.addTranslation(0, -self.spinBoxTranslateStepSize.value())
@@ -458,7 +470,7 @@ class Ui_MainWindow(QMainWindow):
             ['Translation', (self.spinBoxTranslateStepSize.value(), 0)])
 
     def buttonHomeAction(self):
-        #self.window.resetTransformation()
+        # self.window.resetTransformation()
         a = self.window.getTranslation()
         x = str(a[0])
         y = str(a[1])
@@ -534,7 +546,7 @@ class Ui_MainWindow(QMainWindow):
                 items = []
                 for index, polygon in enumerate(objectList):
                     item = None
-                    objectId = 'pl'+str(index)
+                    objectId = 'pl-'+str(index)
                     item = QTreeWidgetItem([objectId, 'Polygon'])
                     # print(polygon, index)
                     for indexPoint, point in enumerate(polygon.getPolygon()):
@@ -557,7 +569,7 @@ class Ui_MainWindow(QMainWindow):
                     yCoordp2 = str(p2.getPoint()[1])
                     coord = '('+xCoordp1+', '+yCoordp1+')'
                     coord2 = '('+xCoordp2+', '+yCoordp2+')'
-                    objectId = 'l'+str(index)
+                    objectId = 'l-'+str(index)
                     item = QTreeWidgetItem([objectId, 'Line'])
                     child = QTreeWidgetItem(['p1', 'Point', coord])
                     child2 = QTreeWidgetItem(['p2', 'Point', coord2])
@@ -573,7 +585,7 @@ class Ui_MainWindow(QMainWindow):
                     xCoord = str(key.getPoint()[0])
                     yCoord = str(key.getPoint()[1])
                     coord = '('+xCoord+', '+yCoord+')'
-                    objectId = 'p'+str(index)
+                    objectId = 'p-'+str(index)
                     item = QTreeWidgetItem([objectId, 'Point', coord])
                     items.append(item)
                 self.treeWidget.insertTopLevelItems(0, items)
@@ -657,7 +669,8 @@ class Ui_MainWindow(QMainWindow):
         self.displayFilePointsCoordinates = xmlReader.getPontos()
         self.displayFileLinesCoordinates = xmlReader.getRetas()
         self.displayFilePolygonsCoordinates = xmlReader.getPoligonos()
-        self.fillDrawerWidget(self.window, self.viewport, self.displayFilePointsCoordinates, self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
+        self.fillDrawerWidget(self.window, self.viewport, self.displayFilePointsCoordinates,
+                              self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
         self.fillObjectsList(self.displayFilePolygonsCoordinates)
         self.fillObjectsList(self.displayFileLinesCoordinates)
         self.fillObjectsList(self.displayFilePointsCoordinates)
@@ -675,16 +688,13 @@ class Ui_MainWindow(QMainWindow):
 
         self.history.append(object)
 
-
     def undoAddOnHistory(self):
         self.history.pop()
         self.listWidget.takeItem(self.listWidget.count()-1)
 
     def onItemClick(self):
         item = self.treeWidget.currentItem()
-        print(item.text(0))
-
-
+        # print(item.text(0))
 
     def applyTransformOperations(self):
         newList = []
@@ -699,8 +709,8 @@ class Ui_MainWindow(QMainWindow):
                     else:
                         tupla = newList[-1][1]
                         a = tupla[0]+value[0]
-                        b= tupla[1]+value[1]
-                        newList[-1] = (operation, (a,b))
+                        b = tupla[1]+value[1]
+                        newList[-1] = (operation, (a, b))
                 else:
                     newList.append(item)
 
