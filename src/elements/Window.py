@@ -79,8 +79,8 @@ class Window:
         self.ty += ty
 
     def addScale(self, sx, sy):
-        self.sx += sx
-        self.sy += sy
+        self.sx *= sx
+        self.sy *= sy
 
     def getTranslation(self):
         return self.tx, self.ty

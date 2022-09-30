@@ -14,13 +14,13 @@ def WorldToPPC(window: Window):
     xmax, ymax = window.getMaxCoordinates()
 
     scale = wt.scale(sx, sy)
+    print(scale)
     transladeToOrigin = wt.translade(-xmin, -ymin)
     transladeToOriginalPosition = wt.translade(xmin+tx, ymin+ty)
     rotate = wt.rotate(math.radians(theta))
 
     transformationMatrix = transladeToOriginalPosition @ (
-        rotate @ (transladeToOrigin @ scale))
-
+        rotate @ (scale @ transladeToOrigin))
     xMin, yMin = calculate(xmin, ymin, transformationMatrix)
     xMax, yMax = calculate(xmax, ymax, transformationMatrix)
     xCenter, yCenter = ((xMin + xMax) / 2, (yMin + yMax) / 2)

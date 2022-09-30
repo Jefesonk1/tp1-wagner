@@ -390,7 +390,9 @@ class Ui_MainWindow(QMainWindow):
             f'Rotation: {degree}')
 
     def zoomWindowAction(self, sx, sy):
+        print(self.window.getScale())
         self.window.addScale(sx, sy)
+        print(self.window.getScale())
         a = self.window.getScale()
         x = str(a[0])
         y = str(a[1])
@@ -418,17 +420,19 @@ class Ui_MainWindow(QMainWindow):
         self.calculatePPC()
 
     def buttonZoomOutAction(self):
-        sx, sy = 0.1, 0.1
         if self.radioButtonWindow.isChecked():
+            sx, sy = 1.1, 1.1
             self.zoomWindowAction(sx, sy)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            sx, sy = 0.9, 0.9
             self.zoomObjectAction(sx, sy)
 
     def buttonZoomInAction(self):
-        sx, sy = -0.1, -0.1
         if self.radioButtonWindow.isChecked():
+            sx, sy = 0.9, 0.9
             self.zoomWindowAction(sx, sy)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            sx, sy = 1.1, 1.1
             self.zoomObjectAction(sx, sy)
 
     def getParentPath(self, item):
