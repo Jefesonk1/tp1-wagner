@@ -389,26 +389,47 @@ class Ui_MainWindow(QMainWindow):
         self.labelRotation.setText(
             f'Rotation: {degree}')
 
-    def buttonZoomOutAction(self):
-        self.window.addScale(0.1, 0.1)
+    def zoomWindowAction(self, sx, sy):
+        self.window.addScale(sx, sy)
         a = self.window.getScale()
         x = str(a[0])
         y = str(a[1])
         self.updateLabelTranslation(x, y)
         self.calculatePPC()
         self.addOnHistory(
-            ['Scale', (-0.1, -0.1)])
+            ['Scale', (sx, sy)])
+
+    def zoomObjectAction(self, sx, sy):
+        item = self.treeWidget.currentItem()
+        src, index = self.getParentPath(item).split('-')
+        index = int(index)
+        if src == 'p':
+            newPoint = self.displayFilePointsCoordinates[index].scale(
+                sx, sy)
+            self.displayFilePointsCoordinates[index] = newPoint
+        elif src == 'l':
+            newPoint = self.displayFileLinesCoordinates[index].scale(
+                sx, sy)
+            self.displayFileLinesCoordinates[index] = newPoint
+        elif src == 'pl':
+            newPoint = self.displayFilePolygonsCoordinates[index].scale(
+                sx, sy)
+            self.displayFilePolygonsCoordinates[index] = newPoint
+        self.calculatePPC()
+
+    def buttonZoomOutAction(self):
+        sx, sy = 0.1, 0.1
+        if self.radioButtonWindow.isChecked():
+            self.zoomWindowAction(sx, sy)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.zoomObjectAction(sx, sy)
 
     def buttonZoomInAction(self):
-        self.window.addScale(-0.1, -0.1)
-        a = self.window.getScale()
-        x = str(a[0])
-        y = str(a[1])
-        self.updateLabelTranslation(x, y)
-        self.calculatePPC()
-        self.addOnHistory(
-            ['Scale', (-0.1, -0.1)])
-
+        sx, sy = -0.1, -0.1
+        if self.radioButtonWindow.isChecked():
+            self.zoomWindowAction(sx, sy)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.zoomObjectAction(sx, sy)
 
     def getParentPath(self, item):
         def getParent(item, outstring):
@@ -419,55 +440,69 @@ class Ui_MainWindow(QMainWindow):
         output = getParent(item, item.text(0))
         return output
 
+    def translateWindowAction(self, tx, ty):
+        self.window.addTranslation(tx, ty)
+        winTranslation = self.window.getTranslation()
+        x = str(winTranslation[0])
+        y = str(winTranslation[1])
+        self.updateLabelTranslation(x, y)
+        self.calculatePPC()
+        self.addOnHistory(
+            ['Translation', (x, y)])
+
+    def translateObjectAction(self, tx, ty):
+        item = self.treeWidget.currentItem()
+        src, index = self.getParentPath(item).split('-')
+        index = int(index)
+        if src == 'p':
+            newPoint = self.displayFilePointsCoordinates[index].translate(
+                tx, ty)
+            self.displayFilePointsCoordinates[index] = newPoint
+        elif src == 'l':
+            newPoint = self.displayFileLinesCoordinates[index].translate(
+                tx, ty)
+            self.displayFileLinesCoordinates[index] = newPoint
+        elif src == 'pl':
+            newPoint = self.displayFilePolygonsCoordinates[index].translate(
+                tx, ty)
+            self.displayFilePolygonsCoordinates[index] = newPoint
+        self.calculatePPC()
+
     def buttonUpAction(self):
+        x = 0
+        y = self.spinBoxTranslateStepSize.value()
+
         if self.radioButtonWindow.isChecked():
-            self.window.addTranslation(0, self.spinBoxTranslateStepSize.value())
-            a = self.window.getTranslation()
-            x = str(a[0])
-            y = str(a[1])
-            self.updateLabelTranslation(x, y)
-            self.calculatePPC()
-            self.addOnHistory(
-                ['Translation', (0, self.spinBoxTranslateStepSize.value())])
+            self.translateWindowAction(x, y)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-            item = self.treeWidget.currentItem()
-            #print(item.text(0))
-            print(self.getParentPath(item))
-            index = int(self.getParentPath(item).split('-')[1])
-            #print()
-            #self.displayFilePointsCoordinates[index] = Point((33,33))
-            print(self.displayFilePointsCoordinates[index])
-            #print()
+            self.translateObjectAction(x, y)
 
     def buttonDownAction(self):
-        self.window.addTranslation(0, -self.spinBoxTranslateStepSize.value())
-        a = self.window.getTranslation()
-        x = str(a[0])
-        y = str(a[1])
-        self.updateLabelTranslation(x, y)
-        self.calculatePPC()
-        self.addOnHistory(
-            ['Translation', (0, -self.spinBoxTranslateStepSize.value())])
+        x = 0
+        y = -self.spinBoxTranslateStepSize.value()
+
+        if self.radioButtonWindow.isChecked():
+            self.translateWindowAction(x, y)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.translateObjectAction(x, y)
 
     def buttonLeftAction(self):
-        self.window.addTranslation(-self.spinBoxTranslateStepSize.value(), 0)
-        a = self.window.getTranslation()
-        x = str(a[0])
-        y = str(a[1])
-        self.updateLabelTranslation(x, y)
-        self.calculatePPC()
-        self.addOnHistory(
-            ['Translation', (-self.spinBoxTranslateStepSize.value(), 0)])
+        x = -self.spinBoxTranslateStepSize.value()
+        y = 0
+
+        if self.radioButtonWindow.isChecked():
+            self.translateWindowAction(x, y)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.translateObjectAction(x, y)
 
     def buttonRightAction(self):
-        self.window.addTranslation(self.spinBoxTranslateStepSize.value(), 0)
-        a = self.window.getTranslation()
-        x = str(a[0])
-        y = str(a[1])
-        self.updateLabelTranslation(x, y)
-        self.calculatePPC()
-        self.addOnHistory(
-            ['Translation', (self.spinBoxTranslateStepSize.value(), 0)])
+        x = self.spinBoxTranslateStepSize.value()
+        y = 0
+
+        if self.radioButtonWindow.isChecked():
+            self.translateWindowAction(x, y)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.translateObjectAction(x, y)
 
     def buttonHomeAction(self):
         # self.window.resetTransformation()
@@ -478,23 +513,46 @@ class Ui_MainWindow(QMainWindow):
         self.window = copy.deepcopy(self.backupWindow)
         self.calculatePPC()
 
-    def buttonRotateLeftAction(self):
-        self.window.addRotation(-self.spinBoxRotateStepSize.value())
+    def rotateWindowAction(self, theta):
+        self.window.addRotation(theta)
         b = self.window.getRotation()
         theta = str(b)
         self.updateLabelRotation(theta)
         self.calculatePPC()
         self.addOnHistory(
-            ['Rotation', (-self.spinBoxRotateStepSize.value())])
+            ['Rotation', (theta)])
+
+    def rotateObjectAction(self, theta):
+        item = self.treeWidget.currentItem()
+        src, index = self.getParentPath(item).split('-')
+        index = int(index)
+        if src == 'p':
+            newPoint = self.displayFilePointsCoordinates[index].rotate(
+                theta)
+            self.displayFilePointsCoordinates[index] = newPoint
+        elif src == 'l':
+            newPoint = self.displayFileLinesCoordinates[index].rotate(
+                theta)
+            self.displayFileLinesCoordinates[index] = newPoint
+        elif src == 'pl':
+            newPoint = self.displayFilePolygonsCoordinates[index].rotate(
+                theta)
+            self.displayFilePolygonsCoordinates[index] = newPoint
+        self.calculatePPC()
+
+    def buttonRotateLeftAction(self):
+        theta = -self.spinBoxRotateStepSize.value()
+        if self.radioButtonWindow.isChecked():
+            self.rotateWindowAction(theta)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.rotateObjectAction(theta)
 
     def buttonRotateRightAction(self):
-        self.window.addRotation(self.spinBoxRotateStepSize.value())
-        b = self.window.getRotation()
-        theta = str(b)
-        self.updateLabelRotation(theta)
-        self.calculatePPC()
-        self.addOnHistory(
-            ['Rotation', (self.spinBoxRotateStepSize.value())])
+        theta = self.spinBoxRotateStepSize.value()
+        if self.radioButtonWindow.isChecked():
+            self.rotateWindowAction(theta)
+        elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
+            self.rotateObjectAction(theta)
 
     def triggerAbout(self):
         my_dialog = QDialog(MainWindow)

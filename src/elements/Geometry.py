@@ -3,9 +3,12 @@ from typing import Tuple
 from elements.Transformations import *
 
 import numpy as np
+
+
 def calculate(x, y, matrix):
 	coord = matrix @ np.array([x, y, 1])
 	return (coord[0], coord[1])
+
 class Element2d:
     def __init__(self):
         self.tx = 0
@@ -33,15 +36,28 @@ class Point(Element2d):
         return self.point
 
     def translate(self, dx, dy):
-        self.point = (self.point[0] + dx, self.point[1] + dy)
-        return self.getPoint()
+        x,y = self.point
+        return Point((x + dx, y + dy))
 
     def scale(self, sx, sy):
-        self.point = (self.point[0] * sx, self.point[1] * sy)
-        return self.getPoint()
+        x,y = self.point
+        transformations = Transformations()
+        moveToOrigin = transformations.translade(-x,-y)
+        scale = transformations.scale(sx,sy)
+        moveToOriginalPosition = transformations.translade(x,y)
+        transformationMatrix = moveToOriginalPosition @ (scale @ moveToOrigin)
+        point = calculate(x,y, transformationMatrix)
+        return Point((point))
 
-    # def rotate(self,angle):
-    #     return self.getPoint()
+    def rotate(self,angle):
+        x,y = self.point
+        transformations = Transformations()
+        moveToOrigin = transformations.translade(-x,-y)
+        rotate = transformations.rotate(angle)
+        moveToOriginalPosition = transformations.translade(x,y)
+        transformationMatrix = moveToOriginalPosition @ (rotate @ moveToOrigin)
+        point = calculate(x,y, transformationMatrix)
+        return Point((point))
 
 class Line(Element2d):
     def __init__(self, point1: Point, point2: Point):
@@ -51,38 +67,52 @@ class Line(Element2d):
     def __str__(self):
        return 'Line = '+''.join(str(e) for e in [self.line[0].getPoint(), self.line[1].getPoint()])
 
-    def getMeanPoint(self):
+    def getGeometricCenter(self):
         x1,y1 = self.line[0].getPoint()
         x2,y2 = self.line[1].getPoint()
-        xMean = (x1+x2)/2
-        yMean = (y1+y2)/2
-        return Point((xMean, yMean))
+        return Point(((x1+x2)/2, (y1+y2)/2))
 
     def getLine(self):
         return self.line
 
     def translate(self, dx, dy):
+        points = []
         for point in self.getLine():
-            point = (point.getPoint()[0] + dx, point.getPoint()[1] + dy)
-        return self.getLine()
+            x,y = point.getPoint()
+            points.append(Point((x + dx, y + dy)))
+        return Line(*points)
 
     def scale(self, sx, sy):
-        meanPoint = self.getMeanPoint()
-        x, y = meanPoint.getPoint()
+        geometricCenter = self.getGeometricCenter()
+        x, y = geometricCenter.getPoint()
         transformations = Transformations()
         moveToOrigin = transformations.translade(-x,-y)
         scale = transformations.scale(sx,sy)
         moveToOriginalPosition = transformations.translade(x,y)
         transformationMatrix = moveToOriginalPosition @ (scale @ moveToOrigin)
-        npt = []
+        points = []
         for point in self.getLine():
-            p = point.getPoint()
-            point = calculate(*p, transformationMatrix)
-            npt.append(point)
-        return npt
+            x,y = point.getPoint()
+            newPoint = calculate(x,y, transformationMatrix)
+            points.append(Point(newPoint))
+        return Line(*points)
 
-    # def rotate(self,angle):
-    #     return self.getLine()
+    def rotate(self,angle):
+        angle = np.radians(angle)
+        geometricCenter = self.getGeometricCenter()
+        x, y = geometricCenter.getPoint()
+        transformations = Transformations()
+        moveToOrigin = transformations.translade(-x,-y)
+        rotate = transformations.rotate(angle)
+        moveToOriginalPosition = transformations.translade(x,y)
+        transformationMatrix = moveToOriginalPosition @ (rotate @ moveToOrigin)
+        points = []
+        for point in self.getLine():
+            x,y = point.getPoint()
+            newPoint = calculate(x,y, transformationMatrix)
+            points.append(Point(newPoint))
+        return Line(*points)
+
 class Polygon(Element2d):
     def __init__(self, *points: Point):
         super().__init__()
@@ -96,36 +126,74 @@ class Polygon(Element2d):
     def getPolygon(self):
         return self.polygon
 
-    def translate(self, dx, dy):
+    def getGeometricCenter(self):
+        x = []; y = []
         for point in self.getPolygon():
-            point = point.translate(dx,dy)
-        return self.getPolygon()
+            x1,y1 = point.getPoint()
+            x.append(x1)
+            y.append(y1)
+        return Point((mean(x), mean(y)))
+
+    def translate(self, dx, dy):
+        points = []
+        for point in self.getPolygon():
+            x,y = point.getPoint()
+            points.append(Point((x + dx, y + dy)))
+        return Polygon(*points)
 
     def scale(self, sx, sy):
+        geometricCenter = self.getGeometricCenter()
+        x, y = geometricCenter.getPoint()
+        transformations = Transformations()
+        moveToOrigin = transformations.translade(-x,-y)
+        scale = transformations.scale(sx,sy)
+        moveToOriginalPosition = transformations.translade(x,y)
+        transformationMatrix = moveToOriginalPosition @ (scale @ moveToOrigin)
+        points = []
         for point in self.getPolygon():
-            self.point = point.scale(sx,sy)
-        return self.getPolygon()
+            x,y = point.getPoint()
+            newPoint = calculate(x,y, transformationMatrix)
+            points.append(Point(newPoint))
+        #print(Polygon(*points))
+        return Polygon(*points)
+
 
     def rotate(self,angle):
-        return self.getPolygon()
+        angle = np.radians(angle)
+        geometricCenter = self.getGeometricCenter()
+        x, y = geometricCenter.getPoint()
+        transformations = Transformations()
+        moveToOrigin = transformations.translade(-x,-y)
+        rotate = transformations.rotate(angle)
+        moveToOriginalPosition = transformations.translade(x,y)
+        transformationMatrix = moveToOriginalPosition @ (rotate @ moveToOrigin)
+        points = []
+        for point in self.getPolygon():
+            x,y = point.getPoint()
+            newPoint = calculate(x,y, transformationMatrix)
+            points.append(Point(newPoint))
+        return Polygon(*points)
+
+
 
 # p1 = Point((1,2))
-# print(p1)
-# print(p1.translate(1,1))
-# print(p1.scale(2,2))
-# print(p1.rotate(1))
-l1 = Line(Point((2,2)), Point((5,5)))
-print(l1)
-# for x in l1.translate(3,4):
-#     print(x)
-print(l1.scale(3,3))
+# print('p1 -> ', p1)
+# print('p1 translate-> ',p1.translate(2,3))
+# print('p1 scale-> ',p1.scale(2,2))
+# print('p1 rotate-> ',p1.rotate(30))
+# print('p1 -> ', p1)
 
-#print(l1.translate(1,2))
-# pl1 = Polygon(p1,p1,p1,Point((2,4)))
-# print(pl1)
-# print(pl1.tx)
+# l1 = Line(Point((2,2)), Point((5,5)))
+# print('l1 -> ', l1)
+# print('l1 translate-> ',l1.translate(2,3))
+# print('l1 scale-> ',l1.scale(3,3))
+# print('l1 rotate-> ',l1.rotate(30))
+# print('l1 -> ', l1)
+
+
 # pl1 = Polygon(Point((2,3)),Point((4,5)), Point((4,3)))
-
-# print(pl1)
-# #for x in pl1.translate(2,2): print(x)
-# for x in pl1.scale(2,2): print(x)
+# print('pl1 -> ', pl1)
+# print('pl1 translate-> ',pl1.translate(2,2))
+# print('pl1 scale-> ',pl1.scale(3,3))
+# print('pl1 rotate-> ',pl1.rotate(30))
+# print('pl1 -> ', pl1)
