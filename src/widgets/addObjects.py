@@ -16,15 +16,28 @@ from PyQt5.QtCore import *
 
 from elements.Geometry import Line, Point, Polygon
 
-class Ui_Dialog(object):
+class Ui_Dialog(QDialog):
+    # def __init__(self):
+    #     QDialog.__init__(self)
+    #     self.setupUi(self)
+    #     self.roiGroups = {}
+        # self.Submit.clicked.connect(self.submitclose)
+    def __init__(self, parent, Dialog):
+        super(Ui_Dialog, self).__init__(parent)
+        self.setupUi(Dialog)
+        self.parent = parent
+        self.points = []
+        self.lines = []
+        self.polygons = []
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(670, 280)
+        self.roiGroups = {}
         self.treeWidget = QtWidgets.QTreeWidget(Dialog)
         self.treeWidget.setGeometry(QtCore.QRect(10, 10, 200, 261))
         self.treeWidget.setObjectName("treeWidget")
-        item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
-        item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
+        # item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
+        # item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
         self.frame = QtWidgets.QFrame(Dialog)
         self.frame.setGeometry(QtCore.QRect(220, 10, 440, 260))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -47,6 +60,7 @@ class Ui_Dialog(object):
         self.buttonSaveAll = QtWidgets.QPushButton(self.frame)
         self.buttonSaveAll.setGeometry(QtCore.QRect(245, 220, 75, 27))
         self.buttonSaveAll.setObjectName("buttonSaveAll")
+        self.buttonSaveAll.clicked.connect(self.handleSave)
         self.buttonCancel = QtWidgets.QPushButton(self.frame)
         self.buttonCancel.setGeometry(QtCore.QRect(330, 220, 75, 27))
         self.buttonCancel.setObjectName("buttonCancel")
@@ -65,15 +79,15 @@ class Ui_Dialog(object):
         self.treeWidget.headerItem().setText(0, _translate("Dialog", "ID"))
         self.treeWidget.headerItem().setText(1, _translate("Dialog", "Type"))
         self.treeWidget.headerItem().setText(2, _translate("Dialog", "Coordinates"))
-        __sortingEnabled = self.treeWidget.isSortingEnabled()
-        self.treeWidget.setSortingEnabled(False)
-        self.treeWidget.topLevelItem(0).setText(0, _translate("Dialog", "p1"))
-        self.treeWidget.topLevelItem(0).setText(1, _translate("Dialog", "Point"))
-        self.treeWidget.topLevelItem(0).setText(2, _translate("Dialog", "(2.0, 3.0)"))
-        self.treeWidget.topLevelItem(1).setText(0, _translate("Dialog", "p2"))
-        self.treeWidget.topLevelItem(1).setText(1, _translate("Dialog", "Point"))
-        self.treeWidget.topLevelItem(1).setText(2, _translate("Dialog", "(3.0, 5.0)"))
-        self.treeWidget.setSortingEnabled(__sortingEnabled)
+        # __sortingEnabled = self.treeWidget.isSortingEnabled()
+        # self.treeWidget.setSortingEnabled(False)
+        # self.treeWidget.topLevelItem(0).setText(0, _translate("Dialog", "p1"))
+        # self.treeWidget.topLevelItem(0).setText(1, _translate("Dialog", "Point"))
+        # self.treeWidget.topLevelItem(0).setText(2, _translate("Dialog", "(2.0, 3.0)"))
+        # self.treeWidget.topLevelItem(1).setText(0, _translate("Dialog", "p2"))
+        # self.treeWidget.topLevelItem(1).setText(1, _translate("Dialog", "Point"))
+        # self.treeWidget.topLevelItem(1).setText(2, _translate("Dialog", "(3.0, 5.0)"))
+        # self.treeWidget.setSortingEnabled(__sortingEnabled)
         self.textInstructions.setHtml(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -152,10 +166,12 @@ class Ui_Dialog(object):
             print("Point")
             #print(Point((float(s[0]), float(s[1]))).getPoint())
             self.fillObjectsList(Point((float(s[0]), float(s[1]))))
+            self.points.append(Point((float(s[0]), float(s[1]))))
             #self.treeWidget.addTopLevelItem(QtWidgets.QTreeWidgetItem(["p3", "Point", "(" + s[0] + ", " + s[1] + ")"]))
         elif(len(s) == 4):
             print("Line")
             self.fillObjectsList(Line(Point((float(s[0]), float(s[1]))), Point((float(s[2]), float(s[3])))))
+            self.lines.append(Line(Point((float(s[0]), float(s[1]))), Point((float(s[2]), float(s[3])))))
             #self.treeWidget.addTopLevelItem(QtWidgets.QTreeWidgetItem(["p3", "Line", "(" + s[0] + ", " + s[1] + "), (" + s[2] + ", " + s[3] + ")"]))
         elif(len(s) > 4):
             print("Polygon")
@@ -177,22 +193,42 @@ class Ui_Dialog(object):
                     #self.fillObjectsList(Polygon(Point((float(s[i]), float(s[i+1])))))
                     #self.treeWidget.addTopLevelItem(QtWidgets.QTreeWidgetItem(["p3", "Polygon", "(" + s[i] + ", " + s[i+1] + ")"]))
             print(PointList)
+            self.polygons.append(Polygon(*PointList))
             self.fillObjectsList(Polygon(*PointList))
             #self.treeWidget.addTopLevelItem(QtWidgets.QTreeWidgetItem(["p3", "Polygon", "(" + s[0] + ", " + s[1] + "), (" + s[2] + ", " + s[3] + "), (" + s[4] + ", " + s[5] + "), (" + s[6] + ", " + s[7] + ")"]))
         #print(a.replace('', ''))
         #a = a.split('),')
         # for x in a:
         #     print(x)
+    def handleSave(self):
+        print("save")
+        #self.accept()
+        #self.parent.buttonLeft.setText("Save")
+        for point in self.points:
+            self.parent.displayFilePointsCoordinates.append(point)
+        for line in self.lines:
+            self.parent.displayFileLinesCoordinates.append(line)
+        for polygon in self.polygons:
+            self.parent.displayFilePolygonsCoordinates.append(polygon)
+
+        self.parent.fillDrawerWidget(self.parent.window, self.parent.viewport, self.parent.displayFilePointsCoordinates,self.parent.displayFileLinesCoordinates, self.parent.displayFilePolygonsCoordinates)
+        # self.parent.fillObjectsList(self.parent.displayFilePolygonsCoordinates)
+        # self.parent.fillObjectsList(self.parent.displayFileLinesCoordinates)
+        # self.parent.fillObjectsList(self.parent.displayFilePointsCoordinates)
+        self.close()
+        return
+
+
 import resources.resource
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
-    styleFile = QFile("style.qss")
-    styleFile.open(QFile.ReadOnly)
-    stylesheet = QTextStream(styleFile).readAll()
-    app.setStyleSheet(stylesheet)
-    sys.exit(app.exec_())
+# if __name__ == "__main__":
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     Dialog = QtWidgets.QDialog()
+#     ui = Ui_Dialog()
+#     ui.setupUi(Dialog)
+#     Dialog.show()
+#     styleFile = QFile("style.qss")
+#     styleFile.open(QFile.ReadOnly)
+#     stylesheet = QTextStream(styleFile).readAll()
+#     app.setStyleSheet(stylesheet)
+#     sys.exit(app.exec_())

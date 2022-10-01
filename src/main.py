@@ -739,9 +739,10 @@ class Ui_MainWindow(QMainWindow):
 
     def triggerAddObject(self):
         Dialog = QtWidgets.QDialog(MainWindow)
-        ui = Ui_Dialog()
-        ui.setupUi(Dialog)
+        ui = Ui_Dialog(self,Dialog)
+        #ui.setupUi(Dialog)
         Dialog.exec_()
+        print(self.buttonLeft)
 
     def addOnHistory(self, object):
         #operation, direction, value = object
