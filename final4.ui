@@ -1035,7 +1035,7 @@ border-color:#E4E4E4;
       <property name="styleSheet">
        <string notr="true"/>
       </property>
-      <widget class="QPushButton" name="buttomRotateLeft">
+      <widget class="QPushButton" name="buttonRotateLeft">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -1067,7 +1067,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomRotateRight">
+      <widget class="QPushButton" name="buttonRotateRight">
        <property name="geometry">
         <rect>
          <x>150</x>
@@ -1099,7 +1099,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomUp">
+      <widget class="QPushButton" name="buttonUp">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1131,7 +1131,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomDown">
+      <widget class="QPushButton" name="buttonDown">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1163,7 +1163,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomLeft">
+      <widget class="QPushButton" name="buttonLeft">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -1195,7 +1195,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomRight">
+      <widget class="QPushButton" name="buttonRight">
        <property name="geometry">
         <rect>
          <x>150</x>
@@ -1286,7 +1286,7 @@ border-color:#E4E4E4;
         <string>Rotation step size</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomHome">
+      <widget class="QPushButton" name="buttonHome">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1318,7 +1318,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomZoomIn">
+      <widget class="QPushButton" name="buttonZoomIn">
        <property name="geometry">
         <rect>
          <x>150</x>
@@ -1350,7 +1350,7 @@ border-color:#E4E4E4;
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttomZoomOut">
+      <widget class="QPushButton" name="buttonZoomOut">
        <property name="geometry">
         <rect>
          <x>30</x>

@@ -652,6 +652,9 @@ class Ui_MainWindow(QMainWindow):
                     items.append(item)
                 self.treeWidget.insertTopLevelItems(0, items)
 
+    def clearObjectsList(self):
+        self.treeWidget.clear()
+
     def initLabels(self):
         a = self.window.getTranslation()
         x = str(a[0])
@@ -738,10 +741,9 @@ class Ui_MainWindow(QMainWindow):
         self.fillObjectsList(self.displayFilePointsCoordinates)
 
     def triggerAddObject(self):
-        Dialog = QtWidgets.QDialog(MainWindow)
-        ui = Ui_Dialog(self,Dialog)
-        #ui.setupUi(Dialog)
-        Dialog.exec_()
+        #Dialog = QtWidgets.QDialog(MainWindow)
+        ui = Ui_Dialog(self)
+        ui.exec_()
         print(self.buttonLeft)
 
     def addOnHistory(self, object):
