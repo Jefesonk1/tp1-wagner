@@ -14,7 +14,7 @@ def WorldToPPC(window: Window):
     xmax, ymax = window.getMaxCoordinates()
 
     scale = wt.scale(sx, sy)
-    print(scale)
+    #print(scale)
     transladeToOrigin = wt.translade(-xmin, -ymin)
     transladeToOriginalPosition = wt.translade(xmin+tx, ymin+ty)
     rotate = wt.rotate(math.radians(theta))

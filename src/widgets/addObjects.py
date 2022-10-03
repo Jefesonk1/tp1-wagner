@@ -22,6 +22,8 @@ class Ui_Dialog(QDialog):
         self.treeWidget.setObjectName("treeWidget")
         font = QFont()
         font.setBold(True)
+        self.treeWidget.headerItem().setFont(0, font)
+        self.treeWidget.headerItem().setFont(1, font)
         self.treeWidget.headerItem().setFont(2, font)
         self.treeWidget.setColumnWidth(0, 55)
         self.treeWidget.setColumnWidth(1, 60)
@@ -31,7 +33,7 @@ class Ui_Dialog(QDialog):
         self.frame.setFrameShadow(QFrame.Raised)
         self.frame.setObjectName("frame")
         self.textInstructions = QTextBrowser(self.frame)
-        self.textInstructions.setGeometry(QRect(60, 50, 311, 71))
+        self.textInstructions.setGeometry(QRect(10, 50, 400, 71))
         self.textInstructions.setObjectName("textInstructions")
         self.input = QLineEdit(self.frame)
         self.input.setGeometry(QRect(10, 170, 310, 27))
@@ -40,6 +42,7 @@ class Ui_Dialog(QDialog):
         self.buttonDelete = QPushButton(self.frame)
         self.buttonDelete.setGeometry(QRect(10, 10, 75, 27))
         self.buttonDelete.setObjectName("buttonDelete")
+        self.buttonDelete.hide()
         self.buttonAdd = QPushButton(self.frame)
         self.buttonAdd.setGeometry(QRect(330, 170, 75, 27))
         self.buttonAdd.setObjectName("buttonAdd")
@@ -51,6 +54,7 @@ class Ui_Dialog(QDialog):
         self.buttonCancel = QPushButton(self.frame)
         self.buttonCancel.setGeometry(QRect(330, 220, 75, 27))
         self.buttonCancel.setObjectName("buttonCancel")
+        self.buttonCancel.clicked.connect(self.handleCancel)
         self.label = QLabel(self.frame)
         self.label.setGeometry(QRect(10, 150, 111, 16))
         self.label.setObjectName("label")
@@ -81,12 +85,12 @@ class Ui_Dialog(QDialog):
 
     def fillObjectsList(self, object):
             if isinstance(object, Polygon):
-                print('Polygon')
+                ##print('Polygon')
                 items = []
                 item = None
                 objectId = 'pl'
                 item = QTreeWidgetItem([objectId, 'Polygon'])
-                # print(polygon, index)
+                # ##print(polygon, index)
                 for indexPoint, point in enumerate(object.getPolygon()):
                     xCoord = str(point.getPoint()[0])
                     yCoord = str(point.getPoint()[1])
@@ -97,7 +101,7 @@ class Ui_Dialog(QDialog):
                 items.append(item)
                 self.treeWidget.insertTopLevelItems(0, items)
             elif isinstance(object, Line):
-                print('Line')
+                ##print('Line')
                 items = []
                 p1, p2 = object.getLine()
                 xCoordp1 = str(p1.getPoint()[0])
@@ -116,7 +120,7 @@ class Ui_Dialog(QDialog):
                 self.treeWidget.insertTopLevelItems(0, items)
 
             elif isinstance(object, Point):
-                print('Point')
+                ##print('Point')
                 items = []
                 xCoord = str(object.getPoint()[0])
                 yCoord = str(object.getPoint()[1])
@@ -129,42 +133,48 @@ class Ui_Dialog(QDialog):
     def addObject(self):
         a = self.input.text()
         s = a.replace('(', '').replace(')', '').replace(' ', '').split(',')
-        print(s)
+        ##print(s)
         if len(s)%2 == 1:
-            print('invalid input')
+            ##print('invalid input')
             return None
         if(len(s) == 2):
-            print("Point")
+            ##print("Point")
             self.fillObjectsList(Point((float(s[0]), float(s[1]))))
             self.points.append(Point((float(s[0]), float(s[1]))))
         elif(len(s) == 4):
-            print("Line")
+            ##print("Line")
             self.fillObjectsList(Line(Point((float(s[0]), float(s[1]))), Point((float(s[2]), float(s[3])))))
             self.lines.append(Line(Point((float(s[0]), float(s[1]))), Point((float(s[2]), float(s[3])))))
         elif(len(s) > 4):
-            print("Polygon")
+            ##print("Polygon")
+            ##print(s)
             PointList = []
             it_a = iter(s)
             it_b = iter(s[1:])
             for item, next_item in zip(it_a, it_b):
-                print(item, next_item)
-                PointList.append(Point((item, next_item)))
+                ##print(item, next_item)
+                PointList.append(Point((float(item), float(next_item))))
                 try:
                     item = next(it_a)
                     next_item = next(it_b)
                 except StopIteration:
                     pass
-            print(PointList)
+            ##print(PointList)
             self.polygons.append(Polygon(*PointList))
             self.fillObjectsList(Polygon(*PointList))
 
+    def handleCancel(self):
+        self.reject()
+
     def handleSave(self):
-        print("save")
+        ##print("save")
         for point in self.points:
             self.parent.displayFilePointsCoordinates.append(point)
         for line in self.lines:
+            #print(line)
             self.parent.displayFileLinesCoordinates.append(line)
         for polygon in self.polygons:
+            #print(polygon)
             self.parent.displayFilePolygonsCoordinates.append(polygon)
 
         self.parent.fillDrawerWidget(self.parent.window, self.parent.viewport, self.parent.displayFilePointsCoordinates,self.parent.displayFileLinesCoordinates, self.parent.displayFilePolygonsCoordinates)

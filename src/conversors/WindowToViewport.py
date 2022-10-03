@@ -29,13 +29,14 @@ class WindowToViewport:
         if (type(element) == Line):
             line = []
             for ponto in element.getLine():
-                line.append(self.__transform(
-                    ponto.getPoint(), window, viewport))
+                currPoint = self.__transform(ponto.getPoint(), window, viewport)
+                line.append(Point(currPoint))
+            #print(Line(*line))
             return Line(*(line))
 
         if (type(element) == Polygon):
             polygon = []
             for point in element.getPolygon():
-                polygon.append(self.__transform(
-                    point.getPoint(), window, viewport))
+                currPoint = self.__transform(point.getPoint(), window, viewport) 
+                polygon.append(Point(currPoint))
             return Polygon(*polygon)

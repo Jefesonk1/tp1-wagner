@@ -11,18 +11,18 @@ class ObjectsConvert:
         if transformationMatrix.shape != (3, 3):
             raise Exception('transformationMatrix must be shape = (3,3)')
         if isinstance(objectsList, list):
-            # print('list')
+            # #print('list')
             for object in objectsList:
                 if isinstance(object, Polygon):
-                    # print('polygon')
+                    # #print('polygon')
                     self.convertedObjectsList.append(
                         self.convertPolygon(object))
                 elif isinstance(object, Line):
-                    # print('line')
+                    # #print('line')
                     self.convertedObjectsList.append(self.convertLine(object))
 
                 elif isinstance(object, Point):
-                    # print('point')
+                    # #print('point')
                     self.convertedObjectsList.append(self.convertPoint(object))
                 else:
                     raise TypeError("Invalid type of object")
@@ -32,7 +32,7 @@ class ObjectsConvert:
 
     def convertPoint(self, point: Point):
         p = (self.transformationMatrix @ [*(point.getPoint()), 1])[:-1]
-       # print(Point(p).getPoint())
+       # #print(Point(p).getPoint())
         return Point(p)
 
     def convertLine(self, line: Line):
@@ -60,11 +60,11 @@ class ObjectsConvert:
 # a.append(l)
 # a.append(pl)
 # list = oc.convert(a, matrix)
-# print(list)
-# print('point', a[0].getPoint())
+# #print(list)
+# #print('point', a[0].getPoint())
 
 # for x in a[1].getLine():
-#     print('line', x.getPoint())
+#     #print('line', x.getPoint())
 
 # for x in a[2].getPolygon():
-#     print('polygon', x.getPoint())
+#     #print('polygon', x.getPoint())

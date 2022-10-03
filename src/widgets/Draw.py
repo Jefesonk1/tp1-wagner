@@ -56,7 +56,7 @@ class Draw(QWidget):
         for point in self.points:
             penColor = QColor(*pointColor)
             pen = QPen(penColor)
-            pen.setWidth(4)
+            pen.setWidth(3)
             qp.setPen(pen)
             pointF = QPointF(*(point.getPoint())) + paddingShift
             self.drawCoordinatesText(qp, pointF - paddingShift)
@@ -65,11 +65,12 @@ class Draw(QWidget):
         for line in self.lines:
             penColor = QColor(*lineColor)
             pen = QPen(penColor)
-            pen.setWidth(4)
+            pen.setWidth(3)
             qp.setPen(pen)
             p1, p2 = line.getLine()
-            pointF1 = QPointF(*p1) + paddingShift
-            pointF2 = QPointF(*p2) + paddingShift
+           # print(line.getLine())
+            pointF1 = QPointF(*p1.getPoint()) + paddingShift
+            pointF2 = QPointF(*p2.getPoint()) + paddingShift
             self.drawCoordinatesText(qp, pointF1 - paddingShift)
             self.drawCoordinatesText(qp, pointF2 - paddingShift)
             qp.drawLine(pointF1, pointF2)
@@ -77,12 +78,12 @@ class Draw(QWidget):
         for polygon in self.polygons:
             penColor = QColor(*polygonColor)
             pen = QPen(penColor)
-            pen.setWidth(4)
+            pen.setWidth(3)
             qp.setPen(pen)
             currentPolygon = []
             points = polygon.getPolygon()
             for idx,point in enumerate(points):
-                currentPolygon.append(QPointF(*point) + paddingShift)
+                currentPolygon.append(QPointF(*point.getPoint()) + paddingShift)
                 self.drawCoordinatesText(qp, currentPolygon[idx] - paddingShift)
             qp.drawPolygon(QPolygonF(currentPolygon))
 
@@ -108,5 +109,5 @@ class Draw(QWidget):
         self.drawText(painter, tooltipPoint, f'({x:.0f}, {y:.0f})')
 
     def drawText(self, painter, qtPoint, text):
-        painter.setFont(QFont('Arial', 7))
+        painter.setFont(QFont('Tahoma', 7))
         painter.drawText(qtPoint, text)

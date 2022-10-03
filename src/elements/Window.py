@@ -66,7 +66,7 @@ class Window:
         if (self.degree >= 360):
             self.degree = self.degree % 360
         if (self.degree <= -360):
-            #print('degree: ', (self.degree* -1) % 360)
+            ##print('degree: ', (self.degree* -1) % 360)
             #self.degree = 360 - (self.degree* -1) % 360
             self.degree = (self.degree * -1) % 360
             #self.degree *= -1
@@ -105,8 +105,8 @@ class Window:
     #     self.transformedWindow = None
     #     self.degree = 0
     #     self.xwMin, self.xwMax, self.ywMin, self.ywMax = self.__backup
-    #     print(self.xwMin, self.xwMax, self.ywMin, self.ywMax)
+    #     #print(self.xwMin, self.xwMax, self.ywMin, self.ywMax)
 
 
 #w = Window(0, 100, 0, 100)
-#print(w.getTransformationMatrix())
+##print(w.getTransformationMatrix())
