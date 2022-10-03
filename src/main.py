@@ -42,7 +42,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 640)
         MainWindow.setFixedSize(QtCore.QSize(1280, 640))
-        self.icons_prefix = 'src/resources/icons/'
+        self.icons_prefix = 'resources/icons/'
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setMinimumSize(QtCore.QSize(0, 0))
         self.centralwidget.setObjectName("centralwidget")
@@ -346,7 +346,7 @@ class Ui_MainWindow(QMainWindow):
         self.actionExport.triggered.connect(self.exportViewportCoordinates)
         self.actionAbout.triggered.connect(self.triggerAbout)
         # retirar dps
-        self.openFile(self.debug)
+        #self.openFile(self.debug)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -813,7 +813,7 @@ class Ui_MainWindow(QMainWindow):
 
     def openFile(self, debug=False):
         if debug:
-            filePath = 'src\entrada.xml'
+            filePath = 'entrada.xml'
         else:
             filePath = self.openFileNameDialog()
             if filePath is None:
@@ -992,12 +992,12 @@ if __name__ == "__main__":
     _Font = QFont("Tahoma", 8)
     QApplication.setFont(_Font)
     MainWindow = QtWidgets.QMainWindow()
-    styleFile = QFile("src\style.qss")
+    styleFile = QFile("style.qss")
     styleFile.open(QFile.ReadOnly)
     stylesheet = QTextStream(styleFile).readAll()
     app.setStyleSheet(stylesheet)
 
-    ui = Ui_MainWindow(MainWindow, debug=True)
+    ui = Ui_MainWindow(MainWindow, debug=False)
     # ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
