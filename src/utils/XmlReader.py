@@ -1,9 +1,9 @@
 from typing import List
 import xml.etree.ElementTree as ET
-from Elements.Geometry import *
-from WindowToViewportConversor import *
-from Elements.Window import *
-from Elements.Viewport import *
+from elements.Geometry import *
+from conversors.WindowToViewport import *
+from elements.Window import *
+from elements.Viewport import *
 
 
 class XmlReader:
