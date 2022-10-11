@@ -15,6 +15,8 @@ from utils.calculate import calculate
 from utils.XmlReader import *
 from utils.XmlWriter import *
 from conversors.ppc import WorldToPPC
+from clippers.Line.CohenSutherlandWrapper import CohenSutherlandWrapper
+from clippers.Point.PointClipperWrapper import PointClipperWrapper
 
 
 #print('resources loaded', resources.resource)
@@ -772,6 +774,8 @@ class Ui_MainWindow(QMainWindow):
 
     def fillDrawerWidget(self, window: Window, viewport: Viewport, points: Point, lines: Line, polygons: Polygon):
         conversor = WindowToViewport()
+        lineClipper = CohenSutherlandWrapper()
+        pointClipper = PointClipperWrapper()
         _viewPortPointsCoordinates = []
         _viewPortLinesCoordinates = []
         _viewPortPolygonsCoordinates = []
@@ -782,17 +786,22 @@ class Ui_MainWindow(QMainWindow):
         viewportHeight = int(viewport.getYvMax() -
                              viewport.getYvMin())
         self.widgetDrawer.setGeometry(QtCore.QRect(
-            10, 10, viewportWidth, viewportHeight))
-
+            0,0, viewportWidth+20, viewportHeight+20))
+        # print('vpw',viewportWidth)
         for point in points:
-            convertedPoint = conversor.convertToViewport(
-                point, window, viewport)
-            _viewPortPointsCoordinates.append(convertedPoint)
+            convertedPoint = pointClipper.clipPoint(point, window)
+            if convertedPoint is not None:
+                convertedPoint = conversor.convertToViewport(
+                    convertedPoint, window, viewport)
+                _viewPortPointsCoordinates.append(convertedPoint)
 
-        for line in lines:
-            convertedLine = conversor.convertToViewport(
-                line, window, viewport)
-            _viewPortLinesCoordinates.append(convertedLine)
+        for indx,line in enumerate(lines):
+            print('passou aqui'+str(indx))
+            convertedLine = lineClipper.clipLine(line, window)
+            if convertedLine is not None:
+                convertedLine = conversor.convertToViewport(
+                    convertedLine, window, viewport)
+                _viewPortLinesCoordinates.append(convertedLine)
 
         for polygon in polygons:
             convertedPolygon = conversor.convertToViewport(
@@ -807,6 +816,7 @@ class Ui_MainWindow(QMainWindow):
 
         for polygon in _viewPortPolygonsCoordinates:
             self.widgetDrawer.drawPolygon(polygon)
+
         self.viewPortPointsCoordinates = _viewPortPointsCoordinates
         self.viewPortLinesCoordinates = _viewPortLinesCoordinates
         self.viewPortPolygonsCoordinates = _viewPortPolygonsCoordinates

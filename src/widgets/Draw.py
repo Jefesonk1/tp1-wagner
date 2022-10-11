@@ -38,7 +38,7 @@ class Draw(QWidget):
         width = self.geometry().width()
         height = self.geometry().height()
         qp.setRenderHint(QPainter.Antialiasing)
-        padding = 10
+        padding = 20
 
         penColor = QColor('#0099d5')
         pen = QPen(penColor)
@@ -52,7 +52,7 @@ class Draw(QWidget):
         pointColor = 224, 142, 69
         lineColor = 229, 83, 129
         polygonColor = 117, 139, 253
-        paddingShift = QPointF(10,10)
+        paddingShift = QPointF(0,0)
         for point in self.points:
             penColor = QColor(*pointColor)
             pen = QPen(penColor)
@@ -87,6 +87,14 @@ class Draw(QWidget):
                 self.drawCoordinatesText(qp, currentPolygon[idx] - paddingShift)
             qp.drawPolygon(QPolygonF(currentPolygon))
 
+        penColor = QColor('#0099d5')
+        pen = QPen(penColor)
+        pen.setWidth(1)
+        qp.setPen(pen)
+        qp.drawLine(padding,padding,padding,height-padding)
+        qp.drawLine(padding,height-padding,width-padding,height-padding)
+        qp.drawLine(width-padding,height-padding,width-padding,padding)
+        qp.drawLine(width-padding,padding,padding,padding)
         self.qp = qp
         qp.end()
 
@@ -105,7 +113,7 @@ class Draw(QWidget):
     def drawCoordinatesText(self, painter, qtPoint):
         # if not self.isDrawCoordinatesEnabled: return
         x, y = qtPoint.x(), qtPoint.y()
-        tooltipPoint = QPointF(x + 15, y + 20)
+        tooltipPoint = QPointF(x + 3, y + 5)
         self.drawText(painter, tooltipPoint, f'({x:.0f}, {y:.0f})')
 
     def drawText(self, painter, qtPoint, text):
