@@ -17,6 +17,7 @@ from utils.XmlWriter import *
 from conversors.ppc import WorldToPPC
 from clippers.Line.CohenSutherlandWrapper import CohenSutherlandWrapper
 from clippers.Point.PointClipperWrapper import PointClipperWrapper
+from clippers.Polygon.WeilerAthertonWrapper import WeilerAthertonWrapper
 
 
 #print('resources loaded', resources.resource)
@@ -24,6 +25,10 @@ from clippers.Point.PointClipperWrapper import PointClipperWrapper
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self, MainWindow, debug=False) -> None:
+        wa = WeilerAthertonWrapper()
+        wa.clipPolygon()
+        
+        exit(0)
         super().__init__(MainWindow)
         self.debug = debug
         self.viewPortPointsCoordinates = []
