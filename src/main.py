@@ -94,6 +94,39 @@ class Ui_MainWindow(QMainWindow):
         self.widget = QtWidgets.QWidget(self.frameInformations)
         self.widget.setGeometry(QtCore.QRect(10, 10, 231, 261))
         self.widget.setObjectName("widget")
+
+
+        self.ClippingWidget = QWidget(self.widget)
+        self.ClippingWidget.setObjectName(u"ClippingWidget")
+        self.ClippingWidget.setGeometry(QRect(0, 0, 221, 131))
+        self.ClippingWidget.setStyleSheet(u"background: #ddffee")
+        self.labelLineAlgorithm = QLabel(self.ClippingWidget)
+        self.labelLineAlgorithm.setObjectName(u"labelLineAlgorithm")
+        self.labelLineAlgorithm.setGeometry(QRect(25, 22, 120, 16))
+        self.labelPolygonAlgorithm = QLabel(self.ClippingWidget)
+        self.labelPolygonAlgorithm.setObjectName(u"labelPolygonAlgorithm")
+        self.labelPolygonAlgorithm.setGeometry(QRect(25, 84, 120, 16))
+        self.radioButtonCohen = QRadioButton(self.ClippingWidget)
+        self.radioButtonCohen.setObjectName(u"radioButtonCohen")
+        self.radioButtonCohen.setGeometry(QRect(55, 42, 120, 20))
+        self.radioButtonLiang = QRadioButton(self.ClippingWidget)
+        self.radioButtonLiang.setObjectName(u"radioButtonLiang")
+        self.radioButtonLiang.setGeometry(QRect(55, 62, 120, 20))
+        self.checkBoxEnableClipping = QCheckBox(self.ClippingWidget)
+        self.checkBoxEnableClipping.setObjectName(u"checkBoxEnableClipping")
+        self.checkBoxEnableClipping.setGeometry(QRect(55, 0, 120, 20))
+        self.radioButtonWeiler = QRadioButton(self.ClippingWidget)
+        self.radioButtonWeiler.setObjectName(u"radioButtonWeiler")
+        self.radioButtonWeiler.setGeometry(QRect(55, 104, 120, 20))
+
+
+
+
+
+
+
+
+
         self.labelTranslation = QtWidgets.QLabel(self.widget)
         self.labelTranslation.setGeometry(QtCore.QRect(20, 10, 200, 16))
         self.labelTranslation.setObjectName("labelTranslation")
@@ -355,6 +388,12 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setWindowTitle(_translate(
             "MainWindow", "Viewport Visualizer"))
        # self.buttonSaveXml.setText(_translate("MainWindow", "Save XML"))
+        self.labelLineAlgorithm.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">Line Algorithm</span></p></body></html>", None))
+        self.labelPolygonAlgorithm.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">Polygon Algorithm</span></p></body></html>", None))
+        self.radioButtonCohen.setText(QCoreApplication.translate("MainWindow", u"Cohen\u2013Sutherland", None))
+        self.radioButtonLiang.setText(QCoreApplication.translate("MainWindow", u"Liang\u2013Barsky", None))
+        self.checkBoxEnableClipping.setText(QCoreApplication.translate("MainWindow", u"Enable Clipping", None))
+        self.radioButtonWeiler.setText(QCoreApplication.translate("MainWindow", u"Weiler\u2013Atherton", None))
         self.labelCoordinates.setText(_translate("MainWindow", "coordinates:"))
         self.labelTranslation.setText(_translate("MainWindow", "Translation"))
         self.labelRotation.setText(_translate("MainWindow", "Rotation"))
