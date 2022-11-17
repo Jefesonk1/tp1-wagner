@@ -25,10 +25,7 @@ from clippers.Polygon.WeilerAthertonWrapper import WeilerAthertonWrapper
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self, MainWindow, debug=False) -> None:
-        wa = WeilerAthertonWrapper()
-        wa.clipPolygon()
-        
-        exit(0)
+
         super().__init__(MainWindow)
         self.debug = debug
         self.viewPortPointsCoordinates = []
@@ -820,6 +817,8 @@ class Ui_MainWindow(QMainWindow):
         conversor = WindowToViewport()
         lineClipper = CohenSutherlandWrapper()
         pointClipper = PointClipperWrapper()
+        polygonClipper = WeilerAthertonWrapper()
+
         _viewPortPointsCoordinates = []
         _viewPortLinesCoordinates = []
         _viewPortPolygonsCoordinates = []
@@ -839,8 +838,7 @@ class Ui_MainWindow(QMainWindow):
                     convertedPoint, window, viewport)
                 _viewPortPointsCoordinates.append(convertedPoint)
 
-        for indx,line in enumerate(lines):
-            print('passou aqui'+str(indx))
+        for line in lines:
             convertedLine = lineClipper.clipLine(line, window)
             if convertedLine is not None:
                 convertedLine = conversor.convertToViewport(
@@ -848,9 +846,15 @@ class Ui_MainWindow(QMainWindow):
                 _viewPortLinesCoordinates.append(convertedLine)
 
         for polygon in polygons:
-            convertedPolygon = conversor.convertToViewport(
-                polygon, window, viewport)
-            _viewPortPolygonsCoordinates.append(convertedPolygon)
+           # print(polygon)
+            convertedPolygon = polygonClipper.clipPolygon(polygon, window)
+           # print('before',convertedPolygon)
+            if convertedPolygon is not None:
+                for polygon in convertedPolygon:
+                    cp = conversor.convertToViewport(
+                        polygon, window, viewport)
+                    _viewPortPolygonsCoordinates.append(cp)
+            #print('after', _viewPortPolygonsCoordinates[0])
 
         for ponto in _viewPortPointsCoordinates:
             self.widgetDrawer.drawPoint(ponto)

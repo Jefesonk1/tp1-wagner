@@ -108,6 +108,7 @@ class Draw(QWidget):
 
     def drawPolygon(self, polygon: Polygon):
         self.polygons.append(polygon)
+        print('DP', polygon)
         self.update()
 
     def drawCoordinatesText(self, painter, qtPoint):

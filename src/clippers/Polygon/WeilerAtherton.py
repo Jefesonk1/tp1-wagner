@@ -3,7 +3,7 @@ from itertools import cycle
 
 class WeilerAtherton:
 
-    def winMinMaxToPolygon(xwmin, ywmin, xwmax, ywmax):
+    def winMinMaxToPolygon(self, xwmin, ywmin, xwmax, ywmax):
         x0 = xwmin, ywmin
         x1 = xwmin, ywmax
 
@@ -19,13 +19,13 @@ class WeilerAtherton:
         pol = [[x0, x1], [x2, x3], [x4, x5], [x6, x7]]
         return pol
 
-    def ordernarTupla(tupla, primeiro=True, decrescente=False):
+    def ordernarTupla(self, tupla, primeiro=True, decrescente=False):
         if primeiro:
             return sorted(
                 tupla, key=lambda t: (t[0], t[1]), reverse=decrescente)
         return sorted(tupla, key=lambda t: (t[1], t[0]), reverse=decrescente)
 
-    def liangBarsky(x0, y0, x1, y1, xwmin, ywmin, xwmax, ywmax):
+    def liangBarsky(self, x0, y0, x1, y1, xwmin, ywmin, xwmax, ywmax):
         intercept = True
         interceptCount = 0
 
@@ -89,7 +89,9 @@ class WeilerAtherton:
 
         return intercept, interceptCount, xn1, yn1, xn2, yn2
 
-    def clipPolygon(pol, xwmin, ywmin, xwmax, ywmax):
+    def clipPolygon(self, pol, xwmin, ywmin, xwmax, ywmax):
+        print(pol)
+        #exit(0)
         l1 = []
         l2 = []
         interceptPoints = []
@@ -97,7 +99,7 @@ class WeilerAtherton:
 
         for line in pol:
             p1, p2 = line
-            result = liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
+            result = self.liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
             interceptCount = result[1]
 
             if interceptCount == 0:
@@ -132,7 +134,7 @@ class WeilerAtherton:
                     interceptPoints.append(
                         (result[2], result[3], 'fora pra dentro'))
 
-        polygonWin = winMinMaxToPolygon(xwmin, ywmin, xwmax, ywmax)
+        polygonWin = self.winMinMaxToPolygon(xwmin, ywmin, xwmax, ywmax)
         coluna = 1
 
         for reta in polygonWin:
@@ -146,7 +148,7 @@ class WeilerAtherton:
                 l2.append(reta[0])
                 indiceInserido = len(l2) - 1
             if (coluna == 1):
-                interceptPoints = ordernarTupla(
+                interceptPoints = self.ordernarTupla(
                     interceptPoints, primeiro=False)  # y menor primeiro
                 for ponto in interceptPoints[:]:
                     if (reta[0][0] == ponto[0]):
@@ -157,7 +159,7 @@ class WeilerAtherton:
                         l2.append(ponto)
 
             if (coluna == 2):
-                interceptPoints = ordernarTupla(interceptPoints, primeiro=True)
+                interceptPoints = self.ordernarTupla(interceptPoints, primeiro=True)
                 for ponto in interceptPoints[:]:
                     if (reta[0][1] == ponto[1]):
                         if ponto[:2] == l2[indiceInserido]:
@@ -166,7 +168,7 @@ class WeilerAtherton:
                         l2.append(ponto)
 
             if (coluna == 3):
-                interceptPoints = ordernarTupla(
+                interceptPoints = self.ordernarTupla(
                     interceptPoints, primeiro=False, decrescente=True)
                 for ponto in interceptPoints[:]:
                     if (reta[1][0] == ponto[0]):
@@ -176,7 +178,7 @@ class WeilerAtherton:
                         l2.append(ponto)
 
             if (coluna == 4):
-                interceptPoints = ordernarTupla(
+                interceptPoints = self.ordernarTupla(
                     interceptPoints, primeiro=True, decrescente=True)
                 for ponto in interceptPoints[:]:
                     if (reta[1][1] == ponto[1]):
@@ -217,6 +219,8 @@ class WeilerAtherton:
             if quantidadeVisitados == quantidadeEntradas:
                 if newPol[-1] == []:
                     newPol.pop()
+                if newPol == []:
+                    return None
                 return newPol
                 break
 
