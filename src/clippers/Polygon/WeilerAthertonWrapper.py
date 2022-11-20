@@ -9,6 +9,8 @@ class WeilerAthertonWrapper:
 		def __init__(self):
 				self.wa = WeilerAtherton()
 		def clipPolygon(self, polygon: Polygon, window: Window):
+				print('type:', type(polygon.getPolygon()[0].getPoint()))
+				print('polygon received', polygon)
 				# print(line, window.getCoordinates())
 				# print("#poligono")
 				# #print(polygon)

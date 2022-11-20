@@ -76,11 +76,11 @@ class CohenSutherland:
                     y2 = y
                     code2 = self.encode(x2, y2, xwMin, ywMin, xwMax, ywMax)
         if accept:
-            print(f"Line accepted from {x1:.2f}, {y1:.2f} to {x2:.2f}, {y2:.2f}")
+            # print(f"Line accepted from {x1:.2f}, {y1:.2f} to {x2:.2f}, {y2:.2f}")
             return x1, y1, x2, y2
             #print(f"{x1:.2f}")
         else:
-            print("Line rejected")
+            # print("Line rejected")
             return None
 
 

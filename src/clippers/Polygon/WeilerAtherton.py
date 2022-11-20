@@ -90,7 +90,7 @@ class WeilerAtherton:
         return intercept, interceptCount, xn1, yn1, xn2, yn2
 
     def clipPolygon(self, pol, xwmin, ywmin, xwmax, ywmax):
-        print(pol)
+        # print(pol)
         #exit(0)
         l1 = []
         l2 = []
@@ -152,7 +152,7 @@ class WeilerAtherton:
                     interceptPoints, primeiro=False)  # y menor primeiro
                 for ponto in interceptPoints[:]:
                     if (reta[0][0] == ponto[0]):
-                        print(ponto)
+                        # print(ponto)
                         if ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)

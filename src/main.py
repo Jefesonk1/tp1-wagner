@@ -439,9 +439,9 @@ class Ui_MainWindow(QMainWindow):
         if pathFilename is None:
             return
         xml = XmlWriter(pathFilename)
-        print(self.viewPortPointsCoordinates)
-        print(self.viewPortLinesCoordinates)
-        print(self.viewPortPolygonsCoordinates)
+        # print(self.viewPortPointsCoordinates)
+        # print(self.viewPortLinesCoordinates)
+        # print(self.viewPortPolygonsCoordinates)
         xml.write(self.viewPortPointsCoordinates, self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
 
 
@@ -721,7 +721,7 @@ class Ui_MainWindow(QMainWindow):
             return
         if (pathFilename):
             xml = XmlWriter(pathFilename)
-            print(self.viewPortPointsCoordinates)
+           # print(self.viewPortPointsCoordinates)
             # xml.write(self.viewPortPointsCoordinates,
                     #   self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
             #self.buttonSaveXml.hide()
@@ -850,10 +850,14 @@ class Ui_MainWindow(QMainWindow):
             convertedPolygon = polygonClipper.clipPolygon(polygon, window)
            # print('before',convertedPolygon)
             if convertedPolygon is not None:
-                for polygon in convertedPolygon:
+                for pol in convertedPolygon:
                     cp = conversor.convertToViewport(
-                        polygon, window, viewport)
+                        pol, window, viewport)
                     _viewPortPolygonsCoordinates.append(cp)
+            else:
+                cp = conversor.convertToViewport(
+                        polygon, window, viewport)
+                _viewPortPolygonsCoordinates.append(cp)
             #print('after', _viewPortPolygonsCoordinates[0])
 
         for ponto in _viewPortPointsCoordinates:

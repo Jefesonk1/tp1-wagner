@@ -12,7 +12,7 @@ class PointClipperWrapper:
 				xwMax, ywMax = window.getMaxCoordinates()
 				result = self.pc.clipPoint(x1, y1, xwMin, ywMin, xwMax, ywMax)
 				if(result is None):
-						print('none')
+						# print('none')
 						return None
 				x1, y1 = result
 				return point
