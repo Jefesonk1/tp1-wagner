@@ -9,8 +9,10 @@ class WeilerAthertonWrapper:
 		def __init__(self):
 				self.wa = WeilerAtherton()
 		def clipPolygon(self, polygon: Polygon, window: Window):
-				print('type:', type(polygon.getPolygon()[0].getPoint()))
-				print('polygon received', polygon)
+				#print('type:', type(polygon.getPolygon()[0].getPoint()))
+				# if type(polygon.getPolygon()[0].getPoint()) == np.ndarray
+				# 	print('numpy')
+				#print('polygon received', polygon)
 				# print(line, window.getCoordinates())
 				# print("#poligono")
 				# #print(polygon)
@@ -25,6 +27,21 @@ class WeilerAthertonWrapper:
 
 				xwMin, ywMin = window.getMinCoordinates()
 				xwMax, ywMax = window.getMaxCoordinates()
+				# print('tipo fora:',type(pol2))
+				# for x in pol2:
+				# 	print('tipo dentro:',type(x))
+				# 	for y in x:
+				# 		print('tipo mais dentro:', type(y))
+				# print(xwMin, ywMin, xwMax, ywMax)
+				# try:
+				# 	for i in range(len(pol2)):
+				# 			for j in range(len(pol2[i])):
+				# 					#print(pol2[i][j])
+				# 					pol2[i][j] = pol2[i][j].tolist()
+				# except:
+				# 	pass
+				#print(pol2)
+
 				result = self.wa.clipPolygon(pol2, xwMin, ywMin, xwMax, ywMax)
 				# print('result', result)
 				# exit(0)

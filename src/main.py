@@ -847,7 +847,13 @@ class Ui_MainWindow(QMainWindow):
 
         for polygon in polygons:
            # print(polygon)
+            #print("#####################")
+           # print(polygon)
             convertedPolygon = polygonClipper.clipPolygon(polygon, window)
+            #convertedPolygon = None
+            # for pol in convertedPolygon:
+            #     print(pol)
+            # print(convertedPolygon)
            # print('before',convertedPolygon)
             if convertedPolygon is not None:
                 for pol in convertedPolygon:

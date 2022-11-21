@@ -27,7 +27,7 @@ class Element2d:
 class Point(Element2d):
     def __init__(self, point: Tuple):
         super().__init__()
-        self.point = point
+        self.point = tuple(point)
 
     def __str__(self):
        return 'Point = '+''.join(str(self.point))

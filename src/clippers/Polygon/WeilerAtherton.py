@@ -1,5 +1,5 @@
 from itertools import cycle
-
+import math
 
 class WeilerAtherton:
 
@@ -45,7 +45,7 @@ class WeilerAtherton:
         if (p1 == 0 and q1 < 0) or (p2 == 0 and
                                     q2 < 0) or (p3 == 0 and
                                                 q3 < 0) or (p4 == 0 and q4 < 0):
-            return False, False, 0, 0, 0, 0, 'false'
+            return False, 0, 0, 0, 0, 0, 'false'
 
         if (p1 != 0):
             r1 = q1 / p1
@@ -87,9 +87,13 @@ class WeilerAtherton:
             intercept = True
             interceptCount = 1
 
+        if xn1 == xn2 and yn1 == yn2:
+            intercept = False
+            interceptCount = 0
         return intercept, interceptCount, xn1, yn1, xn2, yn2
 
     def clipPolygon(self, pol, xwmin, ywmin, xwmax, ywmax):
+        #print(pol)
         # print(pol)
         #exit(0)
         l1 = []
@@ -97,9 +101,11 @@ class WeilerAtherton:
         interceptPoints = []
         quantidadeEntradas = 0
 
+
         for line in pol:
             p1, p2 = line
             result = self.liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
+            print('result', result)
             interceptCount = result[1]
 
             if interceptCount == 0:
@@ -151,7 +157,7 @@ class WeilerAtherton:
                 interceptPoints = self.ordernarTupla(
                     interceptPoints, primeiro=False)  # y menor primeiro
                 for ponto in interceptPoints[:]:
-                    if (reta[0][0] == ponto[0]):
+                    if (math.isclose(reta[0][0] - ponto[0], 0, abs_tol=1e-3)):
                         # print(ponto)
                         if ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
@@ -161,7 +167,7 @@ class WeilerAtherton:
             if (coluna == 2):
                 interceptPoints = self.ordernarTupla(interceptPoints, primeiro=True)
                 for ponto in interceptPoints[:]:
-                    if (reta[0][1] == ponto[1]):
+                    if (math.isclose(reta[0][1] - ponto[1], 0, abs_tol=1e-3)):
                         if ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
@@ -171,7 +177,7 @@ class WeilerAtherton:
                 interceptPoints = self.ordernarTupla(
                     interceptPoints, primeiro=False, decrescente=True)
                 for ponto in interceptPoints[:]:
-                    if (reta[1][0] == ponto[0]):
+                    if (math.isclose(reta[1][0] - ponto[0], 0, abs_tol=1e-3)):
                         if ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
@@ -181,7 +187,7 @@ class WeilerAtherton:
                 interceptPoints = self.ordernarTupla(
                     interceptPoints, primeiro=True, decrescente=True)
                 for ponto in interceptPoints[:]:
-                    if (reta[1][1] == ponto[1]):
+                    if (math.isclose(reta[1][1] - ponto[1], 0, abs_tol=1e-3)):
                         if ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
@@ -189,13 +195,24 @@ class WeilerAtherton:
 
             coluna += 1
 
-        # print("\n######l1######\n")
-        # for x in l1:
-        # 	print(x)
-        # print("\n######l2######\n")
-        # for x in l2:
-        # 	print(x)
-        # print("\n######end######\n")
+        # print("\n######pol######\n")
+        # print(pol)
+        # print(type(pol))
+        # for x in pol:
+        #     print(type(x))
+        #     for y in x:
+        #         print(type(y))
+        print("\n######window######\n")
+        print('xwmin, ywmin, xwmax, ywmax',xwmin, ywmin, xwmax, ywmax)
+        print("\n######pol######\n")
+        print(pol)
+        print("\n######l1######\n")
+        for x in l1:
+        	print(x)
+        print("\n######l2######\n")
+        for x in l2:
+        	print(x)
+        print("\n######end######\n")
 
         l1_circular = cycle(l1)
         l2_circular = cycle(l2)
@@ -239,6 +256,9 @@ class WeilerAtherton:
                 continue
 
             if intercecao != None:
+                print( ponto[:-1])
+                print(intercecao)
+                print(pol)
                 if ponto[:-1] != intercecao:
                     continue
 
