@@ -3,6 +3,12 @@ import math
 
 class WeilerAtherton:
 
+    def pointOutOfBounds(self, x,y, xwmin, ywmin, xwmax, ywmax):
+        if (x >= xwmin and x <= xwmax) and (y >= ywmin and y <= ywmax):
+            return False
+        return True
+
+
     def winMinMaxToPolygon(self, xwmin, ywmin, xwmax, ywmax):
         x0 = xwmin, ywmin
         x1 = xwmin, ywmax
@@ -87,9 +93,12 @@ class WeilerAtherton:
             intercept = True
             interceptCount = 1
 
-        if xn1 == xn2 and yn1 == yn2:
+        if xn1 == xn2 and yn1 == yn2 and not self.pointOutOfBounds(x0,y0,xwmin, ywmin, xwmax, ywmax):
             intercept = False
             interceptCount = 0
+            print('#####')
+            print(x0,y0,x1,y1)
+            print(intercept, interceptCount, xn1, yn1, xn2, yn2)
         return intercept, interceptCount, xn1, yn1, xn2, yn2
 
     def clipPolygon(self, pol, xwmin, ywmin, xwmax, ywmax):
@@ -101,11 +110,11 @@ class WeilerAtherton:
         interceptPoints = []
         quantidadeEntradas = 0
 
-
+        #print("######################")
         for line in pol:
             p1, p2 = line
             result = self.liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
-            print('result', result)
+            #print('result', line, result,sep='\n')
             interceptCount = result[1]
 
             if interceptCount == 0:
@@ -202,17 +211,17 @@ class WeilerAtherton:
         #     print(type(x))
         #     for y in x:
         #         print(type(y))
-        print("\n######window######\n")
-        print('xwmin, ywmin, xwmax, ywmax',xwmin, ywmin, xwmax, ywmax)
-        print("\n######pol######\n")
-        print(pol)
-        print("\n######l1######\n")
-        for x in l1:
-        	print(x)
-        print("\n######l2######\n")
-        for x in l2:
-        	print(x)
-        print("\n######end######\n")
+        # print("\n######window######\n")
+        # print('xwmin, ywmin, xwmax, ywmax',xwmin, ywmin, xwmax, ywmax)
+        # print("\n######pol######\n")
+        # print(pol)
+        # print("\n######l1######\n")
+        # for x in l1:
+        # 	print(x)
+        # print("\n######l2######\n")
+        # for x in l2:
+        # 	print(x)
+        # print("\n######end######\n")
 
         l1_circular = cycle(l1)
         l2_circular = cycle(l2)
@@ -239,7 +248,6 @@ class WeilerAtherton:
                 if newPol == []:
                     return None
                 return newPol
-                break
 
             entradaNaoVisitada = len(
                 ponto
@@ -256,9 +264,9 @@ class WeilerAtherton:
                 continue
 
             if intercecao != None:
-                print( ponto[:-1])
-                print(intercecao)
-                print(pol)
+                # print( ponto[:-1])
+                # print(intercecao)
+                # print(pol)
                 if ponto[:-1] != intercecao:
                     continue
 

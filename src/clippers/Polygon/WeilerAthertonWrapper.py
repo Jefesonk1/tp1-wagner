@@ -46,7 +46,7 @@ class WeilerAthertonWrapper:
 				# print('result', result)
 				# exit(0)
 				if(result is None):
-						print('none')
+						#print('none')
 						return None
 				arrPontos = []
 				for index,polygo in enumerate(result):
