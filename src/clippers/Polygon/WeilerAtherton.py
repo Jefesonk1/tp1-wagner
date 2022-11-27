@@ -3,6 +3,15 @@ import math
 
 class WeilerAtherton:
 
+    def anyPointInside(self,pol, xwmin, ywmin, xwmax, ywmax):
+        for line in pol:
+            for point in line:
+                x,y = point
+                if (x > xwmin and x < xwmax) and (y > ywmin and y < ywmax):
+                    return True
+        return False
+
+
     def pointOutOfBounds(self, x,y, xwmin, ywmin, xwmax, ywmax):
         if (x >= xwmin and x <= xwmax) and (y >= ywmin and y <= ywmax):
             return False
@@ -96,25 +105,33 @@ class WeilerAtherton:
         if xn1 == xn2 and yn1 == yn2 and not self.pointOutOfBounds(x0,y0,xwmin, ywmin, xwmax, ywmax):
             intercept = False
             interceptCount = 0
-            print('#####')
-            print(x0,y0,x1,y1)
-            print(intercept, interceptCount, xn1, yn1, xn2, yn2)
+            # print('#####')
+            # print(x0,y0,x1,y1)
+            # print(intercept, interceptCount, xn1, yn1, xn2, yn2)
         return intercept, interceptCount, xn1, yn1, xn2, yn2
 
     def clipPolygon(self, pol, xwmin, ywmin, xwmax, ywmax):
-        #print(pol)
+        # print('###pol###')
+        # print(pol)
+        # print('###window###')
+        # print('xwmin, ywmin, xwmax, ywmax', xwmin, ywmin, xwmax, ywmax)
+
         # print(pol)
         #exit(0)
         l1 = []
         l2 = []
         interceptPoints = []
         quantidadeEntradas = 0
+        if not self.anyPointInside(pol, xwmin, ywmin, xwmax, ywmax):
+            return None
+            
 
-        #print("######################")
+        print("######################")
         for line in pol:
             p1, p2 = line
             result = self.liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
-            #print('result', line, result,sep='\n')
+            print("")
+            print('result', line, result,sep='\n')
             interceptCount = result[1]
 
             if interceptCount == 0:
@@ -168,7 +185,7 @@ class WeilerAtherton:
                 for ponto in interceptPoints[:]:
                     if (math.isclose(reta[0][0] - ponto[0], 0, abs_tol=1e-3)):
                         # print(ponto)
-                        if ponto[:2] == l2[indiceInserido]:
+                        if indiceInserido and ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
                         l2.append(ponto)
@@ -177,7 +194,7 @@ class WeilerAtherton:
                 interceptPoints = self.ordernarTupla(interceptPoints, primeiro=True)
                 for ponto in interceptPoints[:]:
                     if (math.isclose(reta[0][1] - ponto[1], 0, abs_tol=1e-3)):
-                        if ponto[:2] == l2[indiceInserido]:
+                        if indiceInserido and ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
                         l2.append(ponto)
@@ -187,7 +204,7 @@ class WeilerAtherton:
                     interceptPoints, primeiro=False, decrescente=True)
                 for ponto in interceptPoints[:]:
                     if (math.isclose(reta[1][0] - ponto[0], 0, abs_tol=1e-3)):
-                        if ponto[:2] == l2[indiceInserido]:
+                        if indiceInserido and ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
                         l2.append(ponto)
@@ -197,20 +214,13 @@ class WeilerAtherton:
                     interceptPoints, primeiro=True, decrescente=True)
                 for ponto in interceptPoints[:]:
                     if (math.isclose(reta[1][1] - ponto[1], 0, abs_tol=1e-3)):
-                        if ponto[:2] == l2[indiceInserido]:
+                        if indiceInserido and ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
                         l2.append(ponto)
 
             coluna += 1
 
-        # print("\n######pol######\n")
-        # print(pol)
-        # print(type(pol))
-        # for x in pol:
-        #     print(type(x))
-        #     for y in x:
-        #         print(type(y))
         # print("\n######window######\n")
         # print('xwmin, ywmin, xwmax, ywmax',xwmin, ywmin, xwmax, ywmax)
         # print("\n######pol######\n")
