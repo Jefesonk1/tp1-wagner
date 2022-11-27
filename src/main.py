@@ -828,6 +828,8 @@ class Ui_MainWindow(QMainWindow):
                             viewport.getXvMin())
         viewportHeight = int(viewport.getYvMax() -
                              viewport.getYvMin())
+
+        print(viewportWidth, viewportHeight)
         self.widgetDrawer.setGeometry(QtCore.QRect(
             0,0, viewportWidth+20, viewportHeight+20))
         # print('vpw',viewportWidth)
@@ -890,6 +892,7 @@ class Ui_MainWindow(QMainWindow):
         self.window = xmlReader.getWindow()
         self.backupWindow = copy.deepcopy(self.window)
         self.viewport = xmlReader.getViewport()
+        #print("###", self.viewport.getXvMin(), self.viewport.getXvMax(), self.viewport.getYvMin(), self.viewport.getYvMax())
         self.displayFilePointsCoordinates = xmlReader.getPontos()
         self.displayFileLinesCoordinates = xmlReader.getRetas()
         self.displayFilePolygonsCoordinates = xmlReader.getPoligonos()
