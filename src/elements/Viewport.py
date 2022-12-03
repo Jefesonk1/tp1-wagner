@@ -27,4 +27,5 @@ class Viewport:
         return self.yvMin
 
     def getYvMax(self):
+        #print('Viewport created', self.xvMin, self.xvMax, self.yvMin, self.yvMax)
         return self.yvMax

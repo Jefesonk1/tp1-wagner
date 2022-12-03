@@ -41,13 +41,15 @@ class WeilerAthertonWrapper:
 				# except:
 				# 	pass
 				#print(pol2)
-
+				# print(pol2)
+				# exit(0)
 				result = self.wa.clipPolygon(pol2, xwMin, ywMin, xwMax, ywMax)
-				# print('result', result)
+				print('result', result)
 				# exit(0)
 				if(result is None):
-						#print('none')
+						print('entrou wrapper')
 						return None
+						#print('none')
 				arrPontos = []
 				for index,polygo in enumerate(result):
 					arrPontos.append([])

@@ -98,10 +98,12 @@ class Ui_MainWindow(QMainWindow):
         self.widget.setObjectName("widget")
 
 
+
         self.ClippingWidget = QWidget(self.widget)
         self.ClippingWidget.setObjectName(u"ClippingWidget")
         self.ClippingWidget.setGeometry(QRect(0, 0, 221, 131))
         self.ClippingWidget.setStyleSheet(u"background: #ddffee")
+        linhass = QButtonGroup(self.ClippingWidget)
         self.labelLineAlgorithm = QLabel(self.ClippingWidget)
         self.labelLineAlgorithm.setObjectName(u"labelLineAlgorithm")
         self.labelLineAlgorithm.setGeometry(QRect(25, 22, 120, 16))
@@ -111,15 +113,23 @@ class Ui_MainWindow(QMainWindow):
         self.radioButtonCohen = QRadioButton(self.ClippingWidget)
         self.radioButtonCohen.setObjectName(u"radioButtonCohen")
         self.radioButtonCohen.setGeometry(QRect(55, 42, 120, 20))
+        self.radioButtonCohen.setChecked(True)
+        self.radioButtonCohen.clicked.connect(self.toggleLineAlgorithm)
         self.radioButtonLiang = QRadioButton(self.ClippingWidget)
         self.radioButtonLiang.setObjectName(u"radioButtonLiang")
         self.radioButtonLiang.setGeometry(QRect(55, 62, 120, 20))
+        self.radioButtonLiang.setChecked(True)
+        self.radioButtonLiang.clicked.connect(self.toggleLineAlgorithm)
         self.checkBoxEnableClipping = QCheckBox(self.ClippingWidget)
         self.checkBoxEnableClipping.setObjectName(u"checkBoxEnableClipping")
         self.checkBoxEnableClipping.setGeometry(QRect(55, 0, 120, 20))
         self.radioButtonWeiler = QRadioButton(self.ClippingWidget)
         self.radioButtonWeiler.setObjectName(u"radioButtonWeiler")
         self.radioButtonWeiler.setGeometry(QRect(55, 104, 120, 20))
+        self.radioButtonWeiler.setChecked(True)
+        self.radioButtonWeiler.clicked.connect(lambda: self.radioButtonWeiler.setChecked(True))
+        linhass.addButton(self.radioButtonCohen)
+        linhass.addButton(self.radioButtonLiang)
 
 
 
@@ -425,6 +435,12 @@ class Ui_MainWindow(QMainWindow):
         self.actionSave.setShortcut(_translate("MainWindow", "ctrl+s"))
         self.actionExport.setShortcut(_translate("MainWindow", "ctrl+d"))
 
+
+    def toggleLineAlgorithm(self):
+        if self.radioButtonCohen.isChecked():
+            self.lineAlgorithm = 0
+        elif self.radioButtonLiang.isChecked():
+            self.lineAlgorithm = 1
 
     def exportViewportCoordinates(self):
         print('exported')
@@ -839,6 +855,7 @@ class Ui_MainWindow(QMainWindow):
                 convertedPoint = conversor.convertToViewport(
                     convertedPoint, window, viewport)
                 _viewPortPointsCoordinates.append(convertedPoint)
+            print(convertedPoint)
 
         for line in lines:
             convertedLine = lineClipper.clipLine(line, window)
@@ -857,16 +874,19 @@ class Ui_MainWindow(QMainWindow):
             #     print(pol)
             # print(convertedPolygon)
            # print('before',convertedPolygon)
-            if convertedPolygon is not None:
+            print(convertedPolygon)
+            #exit(0)
+            if convertedPolygon != None:
+                print('nunca')
                 for pol in convertedPolygon:
                     cp = conversor.convertToViewport(
                         pol, window, viewport)
                     _viewPortPolygonsCoordinates.append(cp)
-            else:
-                cp = conversor.convertToViewport(
-                        polygon, window, viewport)
-                _viewPortPolygonsCoordinates.append(cp)
-            #print('after', _viewPortPolygonsCoordinates[0])
+            # else:
+            #     cp = conversor.convertToViewport(
+            #             polygon, window, viewport)
+            #     _viewPortPolygonsCoordinates.append(cp)
+            # print('after', _viewPortPolygonsCoordinates[0])
 
         for ponto in _viewPortPointsCoordinates:
             self.widgetDrawer.drawPoint(ponto)

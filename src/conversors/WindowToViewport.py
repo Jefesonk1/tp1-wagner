@@ -8,17 +8,31 @@ from elements.Geometry import *
 class WindowToViewport:
     def __transform(self, pontos, window: Window, viewport: Viewport):
         Xw, Yw = pontos
-        XwMin = window.getXwMin()
-        XwMax = window.getXwMax()
-        YwMin = window.getYwMin()
-        YwMax = window.getYwMax()
-        xvMin = viewport.getXvMin()
-        XvMax = viewport.getXvMax()
-        YvpMin = viewport.getYvMin()
-        YvpMax = viewport.getYvMax()
-        Xvp = ((Xw - XwMin) / (XwMax - XwMin)) * (XvMax - xvMin)
-        Yvp = (1 - (Yw - YwMin) / (YwMax - YwMin)) * (YvpMax - YvpMin)
-        return (Xvp, Yvp)
+        xwmin = window.getXwMin()
+        xwmax = window.getXwMax()
+        ywmin = window.getYwMin()
+        ywmax = window.getYwMax()
+        xvmin = viewport.getXvMin()
+        xvmax = viewport.getXvMax()
+        yvmin = viewport.getYvMin()
+        yvmax = viewport.getYvMax()
+        #Xvp = ((Xw - XwMin) / (XwMax - XwMin)) * (XvMax - xvMin)
+        #Yvp = (1 - (Yw - YwMin) / (YwMax - YwMin)) * (YvpMax - YvpMin)
+
+        sx = (xvmax - xvmin) / (xwmax - xwmin)
+        sy = (yvmax - yvmin) / (ywmax - ywmin)
+
+        # calculating the point on viewport
+        x_v = xvmin + ((Xw - xwmin) * sx)
+        y_v = yvmin + ((Yw - ywmin) * sy)
+        y_v = yvmax - y_v + yvmin
+
+
+        # print('WINDOWS::::::',xwmin, xwmax, ywmin, ywmax)
+        # print('VIEWPORT:::::', xvmin, xvmax, yvmin, yvmax)
+        # print('PONTOS:::::', pontos)
+        # print('RESULTADO:::::', x_v, y_v)
+        return (x_v, y_v)
 
     def convertToViewport(self, element: Union[Point, Line, Polygon], window: Window, viewport: Viewport) -> List[Union[Point, Line, Polygon]]:
         if (type(element) == Point):

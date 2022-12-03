@@ -38,7 +38,7 @@ class Draw(QWidget):
         width = self.geometry().width()
         height = self.geometry().height()
         qp.setRenderHint(QPainter.Antialiasing)
-        padding = 20
+        padding = 7
 
         penColor = QColor('#0099d5')
         pen = QPen(penColor)
@@ -115,6 +115,7 @@ class Draw(QWidget):
         # if not self.isDrawCoordinatesEnabled: return
         x, y = qtPoint.x(), qtPoint.y()
         tooltipPoint = QPointF(x + 3, y + 5)
+        # self.drawText(painter, tooltipPoint, f'({x-10:.0f}, {y-10:.0f})')
         self.drawText(painter, tooltipPoint, f'({x:.0f}, {y:.0f})')
 
     def drawText(self, painter, qtPoint, text):

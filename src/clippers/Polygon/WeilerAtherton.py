@@ -11,6 +11,13 @@ class WeilerAtherton:
                     return True
         return False
 
+    def allPointInside(self, pol, xwmin, ywmin, xwmax, ywmax):
+        for line in pol:
+            for point in line:
+                x,y = point
+                if (x < xwmin or x > xwmax) or (y < ywmin or y > ywmax):
+                    return False
+        return True
 
     def pointOutOfBounds(self, x,y, xwmin, ywmin, xwmax, ywmax):
         if (x >= xwmin and x <= xwmax) and (y >= ywmin and y <= ywmax):
@@ -123,14 +130,19 @@ class WeilerAtherton:
         interceptPoints = []
         quantidadeEntradas = 0
         if not self.anyPointInside(pol, xwmin, ywmin, xwmax, ywmax):
+            print('entrou nesse NOne',self.anyPointInside(pol, xwmin, ywmin, xwmax, ywmax) )
             return None
-            
 
+        if self.allPointInside(pol, xwmin, ywmin, xwmax, ywmax):
+            return pol
+
+        import os
+        os.system('clear')
         print("######################")
         for line in pol:
             p1, p2 = line
             result = self.liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
-            print("")
+            # print("")
             print('result', line, result,sep='\n')
             interceptCount = result[1]
 
@@ -256,7 +268,9 @@ class WeilerAtherton:
                 if newPol[-1] == []:
                     newPol.pop()
                 if newPol == []:
+                    'entrou nesse none esquisito'
                     return None
+                print('newPol', newPol)
                 return newPol
 
             entradaNaoVisitada = len(
