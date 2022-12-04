@@ -11,18 +11,7 @@ class Window:
         self.ty = 0
         self.sx = 1
         self.sy = 1
-        # self.transformedWindow = None
         self.degree = 0
-        # self.__backup = [xwMin, xwMax, ywMin, ywMax]
-
-    # def getWindowBackup(self):
-    #     return Window(*self.__backup)
-
-    # def setTransformedWindow(self, transformedWindow):
-    #     self.transformedWindow = transformedWindow
-
-    # def getTransformedWindow(self):
-    #     return self.transformedWindow
 
     def setXwMin(self, xwMin):
         self.xwMin = xwMin
@@ -61,15 +50,11 @@ class Window:
         return (self.xwMin + self.xwMax) / 2, (self.ywMin + self.ywMax) / 2
 
     def addRotation(self, degree):
-        #self.degree += math.radians(degree)
         self.degree += degree
         if (self.degree >= 360):
             self.degree = self.degree % 360
         if (self.degree <= -360):
-            ##print('degree: ', (self.degree* -1) % 360)
-            #self.degree = 360 - (self.degree* -1) % 360
             self.degree = (self.degree * -1) % 360
-            #self.degree *= -1
 
     def getRotation(self):
         return self.degree
@@ -85,28 +70,5 @@ class Window:
     def getTranslation(self):
         return self.tx, self.ty
 
-    # def setScale(self, sx, sy):
-    #     self.sx = sx
-    #     self.sy = sy
-
     def getScale(self):
         return self.sx, self.sy
-
-    # def getTransformationMatrix(self):
-    #     wt = Transformations()
-    #     return wt.translade(self.tx, self.ty) @ wt.rotate(self.degree) @ wt.scale(self.sx, self.sy)
-
-
-    # def resetTransformation(self):
-    #     self.tx = 0
-    #     self.ty = 0
-    #     self.sx = 1
-    #     self.sy = 1
-    #     self.transformedWindow = None
-    #     self.degree = 0
-    #     self.xwMin, self.xwMax, self.ywMin, self.ywMax = self.__backup
-    #     #print(self.xwMin, self.xwMax, self.ywMin, self.ywMax)
-
-
-#w = Window(0, 100, 0, 100)
-##print(w.getTransformationMatrix())

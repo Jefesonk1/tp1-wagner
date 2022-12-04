@@ -9,7 +9,6 @@ class XmlWriter:
     def write(self, points, lines, polygons) -> None:
         root = ET.Element("dados")
         for point in points:
-            #print(point)
             x = str(point.getPoint()[0])
             y = str(point.getPoint()[1])
             ET.SubElement(root, "ponto", x=x, y=y)

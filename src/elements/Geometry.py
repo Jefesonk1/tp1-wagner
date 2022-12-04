@@ -27,7 +27,7 @@ class Element2d:
 class Point(Element2d):
     def __init__(self, point: Tuple):
         super().__init__()
-        self.point = point
+        self.point = tuple(point)
 
     def __str__(self):
        return 'Point = '+''.join(str(self.point))
@@ -154,7 +154,6 @@ class Polygon(Element2d):
             x,y = point.getPoint()
             newPoint = calculate(x,y, transformationMatrix)
             points.append(Point(newPoint))
-        ##print(Polygon(*points))
         return Polygon(*points)
 
 
@@ -173,27 +172,3 @@ class Polygon(Element2d):
             newPoint = calculate(x,y, transformationMatrix)
             points.append(Point(newPoint))
         return Polygon(*points)
-
-
-
-# p1 = Point((1,2))
-# #print('p1 -> ', p1)
-# #print('p1 translate-> ',p1.translate(2,3))
-# #print('p1 scale-> ',p1.scale(2,2))
-# #print('p1 rotate-> ',p1.rotate(30))
-# #print('p1 -> ', p1)
-
-# l1 = Line(Point((2,2)), Point((5,5)))
-# #print('l1 -> ', l1)
-# #print('l1 translate-> ',l1.translate(2,3))
-# #print('l1 scale-> ',l1.scale(3,3))
-# #print('l1 rotate-> ',l1.rotate(30))
-# #print('l1 -> ', l1)
-
-
-# pl1 = Polygon(Point((2,3)),Point((4,5)), Point((4,3)))
-# #print('pl1 -> ', pl1)
-# #print('pl1 translate-> ',pl1.translate(2,2))
-# #print('pl1 scale-> ',pl1.scale(3,3))
-# #print('pl1 rotate-> ',pl1.rotate(30))
-# #print('pl1 -> ', pl1)

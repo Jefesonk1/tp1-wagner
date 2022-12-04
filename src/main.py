@@ -15,11 +15,10 @@ from utils.calculate import calculate
 from utils.XmlReader import *
 from utils.XmlWriter import *
 from conversors.ppc import WorldToPPC
-
-
-#print('resources loaded', resources.resource)
-
-
+from clippers.Point.PointClipperWrapper import PointClipperWrapper
+from clippers.Line.CohenSutherlandWrapper import CohenSutherlandWrapper
+from clippers.Line.LiangBarskyWrapper import LiangBarskyWrapper
+from clippers.Polygon.WeilerAthertonWrapper import WeilerAthertonWrapper
 class Ui_MainWindow(QMainWindow):
     def __init__(self, MainWindow, debug=False) -> None:
         super().__init__(MainWindow)
@@ -35,7 +34,6 @@ class Ui_MainWindow(QMainWindow):
         self.viewport = Viewport(0, 0, 0, 0)
         self.windowRotation = 0
         self.windowTranslation = 0
-
         self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):
@@ -92,6 +90,37 @@ class Ui_MainWindow(QMainWindow):
         self.widget = QtWidgets.QWidget(self.frameInformations)
         self.widget.setGeometry(QtCore.QRect(10, 10, 231, 261))
         self.widget.setObjectName("widget")
+        self.ClippingWidget = QWidget(self.widget)
+        self.ClippingWidget.setObjectName(u"ClippingWidget")
+        self.ClippingWidget.setGeometry(QRect(0, 0, 221, 131))
+        linhass = QButtonGroup(self.ClippingWidget)
+        self.labelLineAlgorithm = QLabel(self.ClippingWidget)
+        self.labelLineAlgorithm.setObjectName(u"labelLineAlgorithm")
+        self.labelLineAlgorithm.setGeometry(QRect(25, 22, 120, 16))
+        self.labelPolygonAlgorithm = QLabel(self.ClippingWidget)
+        self.labelPolygonAlgorithm.setObjectName(u"labelPolygonAlgorithm")
+        self.labelPolygonAlgorithm.setGeometry(QRect(25, 84, 120, 16))
+        self.radioButtonCohen = QRadioButton(self.ClippingWidget)
+        self.radioButtonCohen.setObjectName(u"radioButtonCohen")
+        self.radioButtonCohen.setGeometry(QRect(55, 42, 120, 20))
+        self.radioButtonCohen.setChecked(True)
+        self.radioButtonCohen.clicked.connect(self.toggleLineAlgorithm)
+        self.radioButtonLiang = QRadioButton(self.ClippingWidget)
+        self.radioButtonLiang.setObjectName(u"radioButtonLiang")
+        self.radioButtonLiang.setGeometry(QRect(55, 62, 120, 20))
+        self.radioButtonLiang.clicked.connect(self.toggleLineAlgorithm)
+        self.checkBoxEnableClipping = QCheckBox(self.ClippingWidget)
+        self.checkBoxEnableClipping.setObjectName(u"checkBoxEnableClipping")
+        self.checkBoxEnableClipping.setGeometry(QRect(55, 0, 120, 20))
+        self.radioButtonWeiler = QRadioButton(self.ClippingWidget)
+        self.radioButtonWeiler.setObjectName(u"radioButtonWeiler")
+        self.radioButtonWeiler.setGeometry(QRect(55, 104, 120, 20))
+        self.radioButtonWeiler.setChecked(True)
+        self.radioButtonWeiler.clicked.connect(lambda: self.radioButtonWeiler.setChecked(True))
+        linhass.addButton(self.radioButtonCohen)
+        linhass.addButton(self.radioButtonLiang)
+        self.checkBoxEnableClipping.clicked.connect(self.toggleClipping)
+        self.radioButtonCohen.setChecked(True)
         self.labelTranslation = QtWidgets.QLabel(self.widget)
         self.labelTranslation.setGeometry(QtCore.QRect(20, 10, 200, 16))
         self.labelTranslation.setObjectName("labelTranslation")
@@ -104,12 +133,10 @@ class Ui_MainWindow(QMainWindow):
         self.labelWindowCoordinates = QtWidgets.QLabel(self.widget)
         self.labelWindowCoordinates.setGeometry(QtCore.QRect(20, 100, 200, 16))
         self.labelWindowCoordinates.setObjectName("labelWindowCoordinates")
-        ###############################
         self.labelTranslation.hide()
         self.labelRotation.hide()
         self.labelScale.hide()
         self.labelWindowCoordinates.hide()
-        ###############################
         self.listWidget = QtWidgets.QListWidget(self.widget)
         self.listWidget.setGeometry(QtCore.QRect(0, 180, 220, 80))
         self.listWidget.setObjectName("listWidget")
@@ -140,7 +167,6 @@ class Ui_MainWindow(QMainWindow):
         self.treeWidget.setColumnWidth(1, 60)
         self.treeWidget.itemClicked.connect(self.onItemClick)
         self.treeWidget.setIndentation(18)
-        # self.treeWidget.setAlternatingRowColors(True)
         self.frameTransformations = QtWidgets.QFrame(self.frameMain)
         self.frameTransformations.setGeometry(
             QtCore.QRect(1000, 300, 250, 271))
@@ -182,7 +208,6 @@ class Ui_MainWindow(QMainWindow):
         self.buttonRotateRight.setAutoExclusive(False)
         self.buttonRotateRight.setObjectName("buttonRotateRight")
         self.buttonRotateRight.clicked.connect(self.buttonRotateRightAction)
-
         self.buttonUp = QtWidgets.QPushButton(self.widgetTrasformations)
         self.buttonUp.setGeometry(QtCore.QRect(90, 40, 50, 30))
         self.buttonUp.setStyleSheet("")
@@ -196,7 +221,6 @@ class Ui_MainWindow(QMainWindow):
         self.buttonUp.setAutoExclusive(False)
         self.buttonUp.setObjectName("buttonUp")
         self.buttonUp.clicked.connect(self.buttonUpAction)
-        
         self.buttonDown = QtWidgets.QPushButton(self.widgetTrasformations)
         self.buttonDown.setGeometry(QtCore.QRect(90, 120, 50, 30))
         self.buttonDown.setStyleSheet("")
@@ -338,21 +362,23 @@ class Ui_MainWindow(QMainWindow):
         self.menuHelp.addAction(self.actionAbout)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.actionOpen.triggered.connect(self.openFile)
         self.actionSave.triggered.connect(self.saveFile)
         self.actionExport.triggered.connect(self.exportViewportCoordinates)
         self.actionAbout.triggered.connect(self.triggerAbout)
-        # retirar dps
-        #self.openFile(self.debug)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate(
             "MainWindow", "Viewport Visualizer"))
-       # self.buttonSaveXml.setText(_translate("MainWindow", "Save XML"))
+        self.labelLineAlgorithm.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">Line Algorithm</span></p></body></html>", None))
+        self.labelPolygonAlgorithm.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-weight:700;\">Polygon Algorithm</span></p></body></html>", None))
+        self.radioButtonCohen.setText(QCoreApplication.translate("MainWindow", u"Cohen\u2013Sutherland", None))
+        self.radioButtonLiang.setText(QCoreApplication.translate("MainWindow", u"Liang\u2013Barsky", None))
+        self.checkBoxEnableClipping.setText(QCoreApplication.translate("MainWindow", u"Enable Clipping", None))
+        self.radioButtonWeiler.setText(QCoreApplication.translate("MainWindow", u"Weiler\u2013Atherton", None))
         self.labelCoordinates.setText(_translate("MainWindow", "coordinates:"))
         self.labelTranslation.setText(_translate("MainWindow", "Translation"))
         self.labelRotation.setText(_translate("MainWindow", "Rotation"))
@@ -382,39 +408,32 @@ class Ui_MainWindow(QMainWindow):
         self.actionSave.setShortcut(_translate("MainWindow", "ctrl+s"))
         self.actionExport.setShortcut(_translate("MainWindow", "ctrl+d"))
 
+    def toggleClipping(self):
+        self.widgetDrawer.erase()
+        self.calculatePPC()
+
+    def toggleLineAlgorithm(self):
+        if self.checkBoxEnableClipping.isChecked():
+            self.widgetDrawer.erase()
+            self.calculatePPC()
 
     def exportViewportCoordinates(self):
-        print('exported')
-        # for x in self.viewPortPointsCoordinates:
-        #     print(x)
-        # for x in self.viewPortLinesCoordinates:
-        #     print(x.teste())
-        # for x in self.viewPortPolygonsCoordinates:
-        #     print(x)
-        # return 
         pathFilename = self.saveFileDialog('Output Viewport Coordinates')
         if pathFilename is None:
             return
         xml = XmlWriter(pathFilename)
-        print(self.viewPortPointsCoordinates)
-        print(self.viewPortLinesCoordinates)
-        print(self.viewPortPolygonsCoordinates)
         xml.write(self.viewPortPointsCoordinates, self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
-
 
     def triggerDeleteObject(self):
         if self.treeWidget.currentItem() is None:
             return
-        #print('trigged')
         index, objType = self.getCurrentObject()
-        #print('index: ', index, 'type: ', objType)
         if objType == 'Point':
             self.displayFilePointsCoordinates.pop(index)
         elif objType == 'Line':
             self.displayFileLinesCoordinates.pop(index)
         elif objType == 'Polygon':
             self.displayFilePolygonsCoordinates.pop(index)
-        #print(self.displayFilePolygonsCoordinates)
         self.treeWidget.clear()
         self.fillObjectsList(self.displayFilePolygonsCoordinates)
         self.fillObjectsList(self.displayFileLinesCoordinates)
@@ -423,7 +442,6 @@ class Ui_MainWindow(QMainWindow):
         self.fillDrawerWidget(self.window, self.viewport, self.displayFilePointsCoordinates,
                               self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
     def toggle(self):
-        #self.buttonHome.setEnabled(not self.radioButtonWindow.isChecked())
         if self.radioButtonWindow.isChecked():
             self.buttonHome.show()
         else:
@@ -431,7 +449,6 @@ class Ui_MainWindow(QMainWindow):
 
     def calculatePPC(self):
         conversor, window = WorldToPPC(self.window)
-
         oc = ObjectsConvert()
         self.viewPortPointsCoordinates = oc.convert(
             self.displayFilePointsCoordinates, conversor)
@@ -454,9 +471,7 @@ class Ui_MainWindow(QMainWindow):
             f'Rotation: {degree}')
 
     def zoomWindowAction(self, sx, sy):
-        #print(self.window.getScale())
         self.window.addScale(sx, sy)
-        #print(self.window.getScale())
         a = self.window.getScale()
         x = str(a[0])
         y = str(a[1])
@@ -487,7 +502,6 @@ class Ui_MainWindow(QMainWindow):
             self.zoomWindowAction(sx, sy)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
             sx, sy = 0.9, 0.9
-            #self.zoomObjectAction(sx, sy)
             self.addOnHistory(['Scale', (sx, sy)])
 
     def buttonZoomInAction(self):
@@ -496,7 +510,6 @@ class Ui_MainWindow(QMainWindow):
             self.zoomWindowAction(sx, sy)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
             sx, sy = 1.1, 1.1
-            #self.zoomObjectAction(sx, sy)
             self.addOnHistory(['Scale', (sx, sy)])
 
     def getParentPath(self, item):
@@ -553,7 +566,6 @@ class Ui_MainWindow(QMainWindow):
         if self.radioButtonWindow.isChecked():
             self.translateWindowAction(x, y)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-            #self.translateObjectAction(x, y)
             self.addOnHistory(['Translation', (x, y)])
 
     def buttonDownAction(self):
@@ -563,7 +575,6 @@ class Ui_MainWindow(QMainWindow):
         if self.radioButtonWindow.isChecked():
             self.translateWindowAction(x, y)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-           # self.translateObjectAction(x, y)
             self.addOnHistory(['Translation', (x, y)])
 
     def buttonLeftAction(self):
@@ -573,7 +584,6 @@ class Ui_MainWindow(QMainWindow):
         if self.radioButtonWindow.isChecked():
             self.translateWindowAction(x, y)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-            #self.translateObjectAction(x, y)
             self.addOnHistory(['Translation', (x, y)])
 
     def buttonRightAction(self):
@@ -583,11 +593,9 @@ class Ui_MainWindow(QMainWindow):
         if self.radioButtonWindow.isChecked():
             self.translateWindowAction(x, y)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-            #self.translateObjectAction(x, y)
             self.addOnHistory(['Translation', (x, y)])
 
     def buttonHomeAction(self):
-        # self.window.resetTransformation()
         a = self.window.getTranslation()
         x = str(a[0])
         y = str(a[1])
@@ -626,7 +634,6 @@ class Ui_MainWindow(QMainWindow):
         if self.radioButtonWindow.isChecked():
             self.rotateWindowAction(theta)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-           # self.rotateObjectAction(theta)
             self.addOnHistory(['Rotation', (theta)])
 
     def buttonRotateRightAction(self):
@@ -634,25 +641,19 @@ class Ui_MainWindow(QMainWindow):
         if self.radioButtonWindow.isChecked():
             self.rotateWindowAction(theta)
         elif self.radioButtonObjects.isChecked() and self.treeWidget.selectedItems():
-           # self.rotateObjectAction(theta)
             self.addOnHistory(['Rotation', (theta)])
 
     def triggerAbout(self):
         my_dialog = QDialog(MainWindow)
         my_dialog.setWindowTitle("About")
-        # my_dialog.setWindowModality(Qt.ApplicationModal)
         my_dialog.setGeometry(0, 0, 400, 300)
         my_dialog.move(MainWindow.rect().center())
-        # my_dialog.move(QDesktopWidget().availableGeometry().center().x() - self.frameGeometry().center().x() * 0.5, QDesktopWidget().availableGeometry().center().y() - self.frameGeometry().center().y() * 0.5)
         self.labelNameAbout = QtWidgets.QLabel(my_dialog)
-
-        # self.labelNameAbout.setGeometry(QtCore.QRect(10, 270, 101, 20))
         self.labelNameAbout.setObjectName("labelNameAbout")
         self.labelNameAbout.move(my_dialog.rect().center())
         self.labelNameAbout.setText(
             u"<html><head/><body><p><a href=\"https://github.com/Jefesonk1\"><span style=\" text-decoration: underline; color:#0000ff;\">Github</span></a></p></body></html>")
         self.labelNameAbout.setOpenExternalLinks(True)
-        # self.labelNameAbout.setText("Feito por: Jefeson Martins Delazeri\n email: jefesonk1@outlook.com \n github: https://github.com/Jefesonk1")
         my_dialog.exec_()  #
 
     def openFileNameDialog(self):
@@ -664,7 +665,6 @@ class Ui_MainWindow(QMainWindow):
 
     def saveFileDialog(self, defaultFileName='output.xml'):
         options = QFileDialog.Options()
-        #options |= QFileDialog.DontUseNativeDialog
         fileDialog = QFileDialog(self, 'Projects')
         fileDialog.setAttribute(Qt.WA_QuitOnClose, False)
         fileName, _ = fileDialog.getSaveFileName(
@@ -678,24 +678,17 @@ class Ui_MainWindow(QMainWindow):
             return
         if (pathFilename):
             xml = XmlWriter(pathFilename)
-            print(self.viewPortPointsCoordinates)
-            # xml.write(self.viewPortPointsCoordinates,
-                    #   self.viewPortLinesCoordinates, self.viewPortPolygonsCoordinates)
-            #self.buttonSaveXml.hide()
-            #self.buttonSaveXml.setText("Saved")
             xml.write(self.displayFilePointsCoordinates,self.displayFileLinesCoordinates, self.displayFilePolygonsCoordinates)
 
     def fillObjectsList(self, objectList: Union[Point, Line, Polygon]):
 
         if isinstance(objectList, list):
             if objectList and isinstance(objectList[0], Polygon):
-                ##print('Polygon')
                 items = []
                 for index, polygon in enumerate(objectList):
                     item = None
                     objectId = 'pl-'+str(index)
                     item = QTreeWidgetItem([objectId, 'Polygon'])
-                    # #print(polygon, index)
                     for indexPoint, point in enumerate(polygon.getPolygon()):
                         xCoord = str(point.getPoint()[0])
                         yCoord = str(point.getPoint()[1])
@@ -706,7 +699,6 @@ class Ui_MainWindow(QMainWindow):
                     items.append(item)
                 self.treeWidget.insertTopLevelItems(0, items)
             elif objectList and isinstance(objectList[0], Line):
-                ##print('Line')
                 items = []
                 for index, key in enumerate(objectList):
                     p1, p2 = key.getLine()
@@ -726,7 +718,6 @@ class Ui_MainWindow(QMainWindow):
                 self.treeWidget.insertTopLevelItems(0, items)
 
             elif objectList and isinstance(objectList[0], Point):
-               # #print('Point')
                 items = []
                 for index, key in enumerate(objectList):
                     xCoord = str(key.getPoint()[0])
@@ -742,7 +733,6 @@ class Ui_MainWindow(QMainWindow):
 
     def clearHistory(self):
         self.listWidget.clear()
-
 
     def initLabels(self):
         a = self.window.getTranslation()
@@ -772,6 +762,15 @@ class Ui_MainWindow(QMainWindow):
 
     def fillDrawerWidget(self, window: Window, viewport: Viewport, points: Point, lines: Line, polygons: Polygon):
         conversor = WindowToViewport()
+        lineClipper = None
+        if self.radioButtonCohen.isChecked():
+            lineClipper = CohenSutherlandWrapper()
+        else:
+            lineClipper = LiangBarskyWrapper()
+        lineClipper = LiangBarskyWrapper()
+        pointClipper = PointClipperWrapper()
+        polygonClipper = WeilerAthertonWrapper()
+
         _viewPortPointsCoordinates = []
         _viewPortLinesCoordinates = []
         _viewPortPolygonsCoordinates = []
@@ -781,23 +780,47 @@ class Ui_MainWindow(QMainWindow):
                             viewport.getXvMin())
         viewportHeight = int(viewport.getYvMax() -
                              viewport.getYvMin())
+
         self.widgetDrawer.setGeometry(QtCore.QRect(
-            10, 10, viewportWidth, viewportHeight))
+            0,0, viewportWidth+20, viewportHeight+20))
 
-        for point in points:
-            convertedPoint = conversor.convertToViewport(
-                point, window, viewport)
-            _viewPortPointsCoordinates.append(convertedPoint)
+        if self.checkBoxEnableClipping.isChecked():
+            for point in points:
+                convertedPoint = pointClipper.clipPoint(point, window)
+                if convertedPoint is not None:
+                    convertedPoint = conversor.convertToViewport(
+                        convertedPoint, window, viewport)
+                    _viewPortPointsCoordinates.append(convertedPoint)
 
-        for line in lines:
-            convertedLine = conversor.convertToViewport(
-                line, window, viewport)
-            _viewPortLinesCoordinates.append(convertedLine)
+            for line in lines:
+                convertedLine = lineClipper.clipLine(line, window)
+                if convertedLine is not None:
+                    convertedLine = conversor.convertToViewport(
+                        convertedLine, window, viewport)
+                    _viewPortLinesCoordinates.append(convertedLine)
 
-        for polygon in polygons:
-            convertedPolygon = conversor.convertToViewport(
-                polygon, window, viewport)
-            _viewPortPolygonsCoordinates.append(convertedPolygon)
+            for polygon in polygons:
+                convertedPolygon = polygonClipper.clipPolygon(polygon, window)
+                if convertedPolygon != None:
+                    for pol in convertedPolygon:
+                        cp = conversor.convertToViewport(
+                            pol, window, viewport)
+                        _viewPortPolygonsCoordinates.append(cp)
+        else:
+            for point in points:
+                convertedPoint = conversor.convertToViewport(
+                    point, window, viewport)
+                _viewPortPointsCoordinates.append(convertedPoint)
+
+            for line in lines:
+                convertedLine = conversor.convertToViewport(
+                    line, window, viewport)
+                _viewPortLinesCoordinates.append(convertedLine)
+
+            for polygon in polygons:
+                convertedPolygon = conversor.convertToViewport(
+                    polygon, window, viewport)
+                _viewPortPolygonsCoordinates.append(convertedPolygon)
 
         for ponto in _viewPortPointsCoordinates:
             self.widgetDrawer.drawPoint(ponto)
@@ -807,6 +830,7 @@ class Ui_MainWindow(QMainWindow):
 
         for polygon in _viewPortPolygonsCoordinates:
             self.widgetDrawer.drawPolygon(polygon)
+
         self.viewPortPointsCoordinates = _viewPortPointsCoordinates
         self.viewPortLinesCoordinates = _viewPortLinesCoordinates
         self.viewPortPolygonsCoordinates = _viewPortPolygonsCoordinates
@@ -832,13 +856,10 @@ class Ui_MainWindow(QMainWindow):
         self.fillObjectsList(self.displayFilePointsCoordinates)
 
     def triggerAddObject(self):
-        #Dialog = QtWidgets.QDialog(MainWindow)
         ui = Ui_Dialog(self)
         ui.exec_()
-        #print(self.buttonLeft)
 
     def addOnHistory(self, object):
-        #operation, direction, value = object
         listWidgetItem = QListWidgetItem(''.join(str(object)))
         self.listWidget.addItem(listWidgetItem)
 
@@ -851,7 +872,6 @@ class Ui_MainWindow(QMainWindow):
 
     def onItemClick(self):
         item = self.treeWidget.currentItem()
-        # #print(item.text(0))
 
     def applyTransformOperations(self):
         if self.history != []:
@@ -880,23 +900,15 @@ class Ui_MainWindow(QMainWindow):
             idxToPop = []
             for idx, element in enumerate(newList):
                 operation, value = element
-                ##print(operation, value, idx)
                 if(operation == 'Translation' and value == (0,0)):
-                    #print('entrou translation')
-                    #newList.pop(idx)
                     idxToPop.append(idx)
                 elif(operation == 'Rotation' and value == 0):
-                    #print('entrou rotation')
-                    #newList.pop(idx)
                     idxToPop.append(idx)
                 elif(operation == 'Scale' and value == (1,1)):
-                    #print('entrou scale')
-                    #newList.pop(idx)
                     idxToPop.append(idx)
             self.clearHistory()
             self.history.clear()
             newList = [ newList[i] for i in range(len(newList)) if i not in idxToPop ]
-            #print(newList)
             index, objType = self.getCurrentObject()
             if objType == 'Polygon':
                 objectt = self.displayFilePolygonsCoordinates[index]
@@ -907,9 +919,7 @@ class Ui_MainWindow(QMainWindow):
                 xx = toOrigin
                 tx, ty = 0, 0
                 for operation, value in newList:
-                    #tirar translation pq vai dar ruim
                     if(operation == 'Translation'):
-                    #xx = t.translade(value[0], value[1]) @ xx 
                         tx, ty = tx + value[0], ty + value[1]
                     elif(operation == 'Rotation'):
                         xx = t.rotate(np.radians(value)) @ xx
@@ -917,7 +927,6 @@ class Ui_MainWindow(QMainWindow):
                         xx = t.scale(value[0], value[1]) @ xx
                 xx = backToCenter @ xx
                 xx = t.translade(tx, ty) @ xx
-                #print(xx)
                 points = []
                 for point in objectt.getPolygon():
                     x,y = point.getPoint()
@@ -936,9 +945,7 @@ class Ui_MainWindow(QMainWindow):
                 xx = toOrigin
                 tx, ty = 0, 0
                 for operation, value in newList:
-                    #tirar translation pq vai dar ruim
                     if(operation == 'Translation'):
-                    #xx = t.translade(value[0], value[1]) @ xx 
                         tx, ty = tx + value[0], ty + value[1]
                     elif(operation == 'Rotation'):
                         xx = t.rotate(np.radians(value)) @ xx
@@ -946,7 +953,6 @@ class Ui_MainWindow(QMainWindow):
                         xx = t.scale(value[0], value[1]) @ xx
                 xx = backToCenter @ xx
                 xx = t.translade(tx, ty) @ xx
-                #print(xx)
                 points = []
                 for point in objectt.getLine():
                     x,y = point.getPoint()
@@ -965,9 +971,7 @@ class Ui_MainWindow(QMainWindow):
                 xx = toOrigin
                 tx, ty = 0, 0
                 for operation, value in newList:
-                    #tirar translation pq vai dar ruim
                     if(operation == 'Translation'):
-                    #xx = t.translade(value[0], value[1]) @ xx 
                         tx, ty = tx + value[0], ty + value[1]
                     elif(operation == 'Rotation'):
                         xx = t.rotate(np.radians(value)) @ xx
@@ -975,16 +979,13 @@ class Ui_MainWindow(QMainWindow):
                         xx = t.scale(value[0], value[1]) @ xx
                 xx = backToCenter @ xx
                 xx = t.translade(tx, ty) @ xx
-                #print(xx)
                 points = []
-                
                 x,y = xCenter, yCenter
                 newPoint = calculate(x,y, xx)
                 aaa = Point((newPoint))
                 self.displayFilePointsCoordinates[index] = aaa
                 self.calculatePPC()
                 return
-
 
 if __name__ == "__main__":
     import sys
@@ -996,8 +997,6 @@ if __name__ == "__main__":
     styleFile.open(QFile.ReadOnly)
     stylesheet = QTextStream(styleFile).readAll()
     app.setStyleSheet(stylesheet)
-
     ui = Ui_MainWindow(MainWindow, debug=False)
-    # ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

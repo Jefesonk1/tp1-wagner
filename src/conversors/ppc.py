@@ -12,33 +12,17 @@ def WorldToPPC(window: Window):
     wt = Transformations()
     xmin, ymin = window.getMinCoordinates()
     xmax, ymax = window.getMaxCoordinates()
-
     scale = wt.scale(sx, sy)
-    #print(scale)
     transladeToOrigin = wt.translade(-xmin, -ymin)
     transladeToOriginalPosition = wt.translade(xmin+tx, ymin+ty)
     rotate = wt.rotate(math.radians(theta))
-
     transformationMatrix = transladeToOriginalPosition @ (
         rotate @ (scale @ transladeToOrigin))
     xMin, yMin = calculate(xmin, ymin, transformationMatrix)
     xMax, yMax = calculate(xmax, ymax, transformationMatrix)
     xCenter, yCenter = ((xMin + xMax) / 2, (yMin + yMax) / 2)
-
     finalTransformationMatrix = wt.rotate(
         math.radians(-theta)) @ wt.translade(-xCenter, -yCenter)
-
     xwMin, ywMin = calculate(xMin, yMin, finalTransformationMatrix)
     xwMax, ywMax = calculate(xMax, yMax, finalTransformationMatrix)
     return finalTransformationMatrix, Window(xwMin, xwMax, ywMin, ywMax)
-    # oc = ObjectsConvert()
-    # viewPortPointsCoordinates = oc.convert(
-    #     displayFilePointsCoordinates, finalTransformationMatrix)
-    # viewPortLinesCoordinates = oc.convert(
-    #     displayFileLinesCoordinates, finalTransformationMatrix)
-    # viewPortPolygonsCoordinates = oc.convert(
-    #     displayFilePolygonsCoordinates, finalTransformationMatrix)
-    # widgetDrawer.erase()
-    # newWindow = Window(xwMin, xwMax, ywMin, ywMax)
-    # fillDrawerWidget(newWindow, viewport, viewPortPointsCoordinates,
-    #                  viewPortLinesCoordinates, viewPortPolygonsCoordinates)
