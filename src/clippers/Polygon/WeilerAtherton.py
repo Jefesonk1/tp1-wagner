@@ -112,38 +112,23 @@ class WeilerAtherton:
         if xn1 == xn2 and yn1 == yn2 and not self.pointOutOfBounds(x0,y0,xwmin, ywmin, xwmax, ywmax):
             intercept = False
             interceptCount = 0
-            # print('#####')
-            # print(x0,y0,x1,y1)
-            # print(intercept, interceptCount, xn1, yn1, xn2, yn2)
+
         return intercept, interceptCount, xn1, yn1, xn2, yn2
 
     def clipPolygon(self, pol, xwmin, ywmin, xwmax, ywmax):
-        # print('###pol###')
-        # print(pol)
-        # print('###window###')
-        # print('xwmin, ywmin, xwmax, ywmax', xwmin, ywmin, xwmax, ywmax)
-
-        # print(pol)
-        #exit(0)
         l1 = []
         l2 = []
         interceptPoints = []
         quantidadeEntradas = 0
         if not self.anyPointInside(pol, xwmin, ywmin, xwmax, ywmax):
-            print('entrou nesse NOne',self.anyPointInside(pol, xwmin, ywmin, xwmax, ywmax) )
             return None
 
         if self.allPointInside(pol, xwmin, ywmin, xwmax, ywmax):
             return pol
 
-        import os
-        os.system('clear')
-        print("######################")
         for line in pol:
             p1, p2 = line
             result = self.liangBarsky(*p1, *p2, xwmin, ywmin, xwmax, ywmax)
-            # print("")
-            print('result', line, result,sep='\n')
             interceptCount = result[1]
 
             if interceptCount == 0:
@@ -193,10 +178,9 @@ class WeilerAtherton:
                 indiceInserido = len(l2) - 1
             if (coluna == 1):
                 interceptPoints = self.ordernarTupla(
-                    interceptPoints, primeiro=False)  # y menor primeiro
+                    interceptPoints, primeiro=False)
                 for ponto in interceptPoints[:]:
                     if (math.isclose(reta[0][0] - ponto[0], 0, abs_tol=1e-3)):
-                        # print(ponto)
                         if indiceInserido and ponto[:2] == l2[indiceInserido]:
                             l2.pop(indiceInserido)
                         interceptPoints.remove(ponto)
@@ -233,18 +217,6 @@ class WeilerAtherton:
 
             coluna += 1
 
-        # print("\n######window######\n")
-        # print('xwmin, ywmin, xwmax, ywmax',xwmin, ywmin, xwmax, ywmax)
-        # print("\n######pol######\n")
-        # print(pol)
-        # print("\n######l1######\n")
-        # for x in l1:
-        # 	print(x)
-        # print("\n######l2######\n")
-        # for x in l2:
-        # 	print(x)
-        # print("\n######end######\n")
-
         l1_circular = cycle(l1)
         l2_circular = cycle(l2)
 
@@ -268,9 +240,7 @@ class WeilerAtherton:
                 if newPol[-1] == []:
                     newPol.pop()
                 if newPol == []:
-                    'entrou nesse none esquisito'
                     return None
-                print('newPol', newPol)
                 return newPol
 
             entradaNaoVisitada = len(
@@ -288,9 +258,6 @@ class WeilerAtherton:
                 continue
 
             if intercecao != None:
-                # print( ponto[:-1])
-                # print(intercecao)
-                # print(pol)
                 if ponto[:-1] != intercecao:
                     continue
 

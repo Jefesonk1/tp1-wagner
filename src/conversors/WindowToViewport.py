@@ -16,22 +16,11 @@ class WindowToViewport:
         xvmax = viewport.getXvMax()
         yvmin = viewport.getYvMin()
         yvmax = viewport.getYvMax()
-        #Xvp = ((Xw - XwMin) / (XwMax - XwMin)) * (XvMax - xvMin)
-        #Yvp = (1 - (Yw - YwMin) / (YwMax - YwMin)) * (YvpMax - YvpMin)
-
         sx = (xvmax - xvmin) / (xwmax - xwmin)
         sy = (yvmax - yvmin) / (ywmax - ywmin)
-
-        # calculating the point on viewport
         x_v = xvmin + ((Xw - xwmin) * sx)
         y_v = yvmin + ((Yw - ywmin) * sy)
         y_v = yvmax - y_v + yvmin
-
-
-        # print('WINDOWS::::::',xwmin, xwmax, ywmin, ywmax)
-        # print('VIEWPORT:::::', xvmin, xvmax, yvmin, yvmax)
-        # print('PONTOS:::::', pontos)
-        # print('RESULTADO:::::', x_v, y_v)
         return (x_v, y_v)
 
     def convertToViewport(self, element: Union[Point, Line, Polygon], window: Window, viewport: Viewport) -> List[Union[Point, Line, Polygon]]:
@@ -45,7 +34,6 @@ class WindowToViewport:
             for ponto in element.getLine():
                 currPoint = self.__transform(ponto.getPoint(), window, viewport)
                 line.append(Point(currPoint))
-            #print(Line(*line))
             return Line(*(line))
 
         if (type(element) == Polygon):
